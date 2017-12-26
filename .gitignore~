@@ -1,0 +1,4 @@
+# cpp:
+*.cpp~      # no *.cpp~ files, temp files such as .cpp~
+*.out       # no g++ out files
+
