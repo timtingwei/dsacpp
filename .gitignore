@@ -1,8 +1,4 @@
-# a comment this is ignored
-*~     # no *~ files, temp filessuch as .cpp~
-*\#    # no *# files,
-*.out  # no g++ out files
+# cpp:
+*.cpp~      # no *.cpp~ files, temp files such as .cpp~
+*.out       # no g++ out files
 
-# /TODO       # only ignore the root TODO file, not subdir /TODO
-# build/      # ignore all files in build/ directory
-# doc/*.txt   # ignore doc/notes.txt, but not doc/server/arch.txt
