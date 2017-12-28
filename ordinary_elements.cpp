@@ -14,10 +14,29 @@ int ordinaryElements(int A[], int n);
 void swap(int* a, int* b);
 void print_abc(const int a, const int b, const int c);
 
+
 int ordinaryElements(int A[], int n) {
   // 从n >= 3个互异整数中,除最大、最小者以外,任取一个“常规元素”
   // 先比较a,b;再确定c对于(a,b)区间的关系
-  int a = A[0], b = A[1], c = A[2];
+  int a = A[0], b = A[1], c = A[2];    // 从特定单元读取元素O(3)
+  // 统一成区间(a, b), 用于c对其判断
+  if (a < b) { } else {
+    swap(&a, &b);
+  }
+  if (c < a) return a;
+  else if (c > b) return b;
+  else
+    return c;
+  // return 输出非极端数O(1)
+
+  // =======================================
+  // T(n) = O(3) + O(3) + O(1) = O(7) = O(1)
+}
+
+int another_ordinaryElements(int A[], int n) {
+  // 从n >= 3个互异整数中,除最大、最小者以外,任取一个“常规元素”
+  // 先比较a,b;再确定c对于(a,b)区间的关系, 有较多分支
+  int a = A[0], b = A[1], c = A[2];                 // 从特定单元读取元素O(3)
   // 统一成区间(a, b), 用于c对其判断
   if (a < b) { } else {
     swap(&a, &b);
@@ -28,6 +47,7 @@ int ordinaryElements(int A[], int n) {
       swap(&b, &c);
     }
   }
+  // 最多三次比较O(3)
 
   /*======以上展开=====
   if (c < a) {                           // c 在(-, a)
@@ -45,7 +65,9 @@ int ordinaryElements(int A[], int n) {
     }
   }
   */
-  return b;
+  return b;  // 输出非极端数O(1)
+  // ===================================
+  // T(n) = O(3) + O(3) + O(1) = O(7) = O(1)
 }
 
 int my_ordinaryElements(int A[], int n) {
