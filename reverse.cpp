@@ -12,6 +12,8 @@
 // 任给数组A[0,n), 将其前后颠倒  // 更一般的子区间[lo, hi]
 
 void reverse(int* A, int lo, int hi);
+void reverse_iterate_original(int* A, int lo, int hi);
+void reverse_iterate(int* A, int lo, int hi);
 void swap(int* a, int* b);
 void print_array(int* A, int lo, int hi);
 
@@ -30,6 +32,18 @@ void reverse(int* A, int lo, int hi) {
   }
 }
 
+void reverse_iterate_original(int* A, int lo, int hi) {
+  // 迭代原始版本
+next:
+  if (lo < hi)
+  {swap(&A[lo], &A[hi]); lo++; hi--; goto next;}
+}
+
+void reverse_iterate(int* A, int lo, int hi) {
+  // 迭代版本
+  while (lo < hi) swap(&A[lo++], &A[hi--]);
+}
+
 void swap(int* a, int* b) {
   int tmp = *a;
   *a = *b; *b = tmp;
@@ -44,18 +58,12 @@ void print_array(int* A, int lo, int hi) {
 int main() {
   // ...
 
-  // fitst input
-  // int A[] = {1, 2, 3, 4, 5};
-  // int lo = 0, hi = 4;
-
-  // second input
-  // int A[] = {1, 2, 3, 4, 5};
-  // int lo = 0, hi = 2;
-
   // third point
   int A[] = {1, 2, 3, 4, 5};
-  int lo = 0, hi = 3;
-  reverse(A, lo, hi);
+  int lo = 1, hi = 3;
+  // reverse(A, lo, hi);
+  // reverse_iterate(A, lo, hi);
+  reverse_iterate_original(A, lo, hi);
   print_array(A, lo, hi);
 
   // ...
