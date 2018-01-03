@@ -37,19 +37,32 @@ int max2_three_iters(int A[], int lo, int hi) {
 
 int max2(int A[], int lo, int hi) {
   // 遍历一次，改变指针
-  int* x1 = &lo, *x2 = &lo;         // attention:定义指针的方式
-  for (int i = lo; i <= hi; i++) {
+  int* x1 = &lo;
+  int lo_next = lo + 1;
+  int* x2 = &lo_next;
+  if (A[*x1] < A[*x2]) {x1 = &lo_next; x2 = &lo;}
+  for (int i = lo + 2; i <= hi; i++) {
     if (A[*x2] < A[i]) {      // 索引i的对象比较小的值大
       if (A[*x1] < A[i]) {    // 索引i的对象甚至超过了较大值
         x2 = &(*x1); x1 = &i;
         break;
       }
-      x1 = &i;                // x1指针地址指向此时的i
+      *x2 = i;                // x1指针指向的元素赋值成i
     }
   }
   std::cout << " A[*x1] "  << A[*x1] << '\n'
             << " A[*x2] "  << A[*x2] << std::endl;
 }
+
+/*
+int max2(int A[], int lo, int hi, int & x1, int &x2) {
+  if (A[x1 = lo] < A[x2 = lo + 1]) swap(x1, x2);
+  for (int i = lo + 2; i < hi; i++)
+    if (A[x2] < A[i])
+      if (A[x2] < A[x2 = i])
+        swap(x1, x2);
+}
+*/
 
 
 // 分析:
@@ -57,12 +70,26 @@ int max2(int A[], int lo, int hi) {
 // 规模每次缩减一半，最后到达递归基
 // 将多个问题结果合并
 
+void test_ptr() {
+  int i = 5, i2 = 2;
+  int* ip = &i;
+  int &ir = i;
+  // ip = &(i+6);
+  // *ip = i2;       // *ip = 2; i = 2;   *ip代表i, i2赋值给i
+  ip = &i2;       // *ip = 2; i = 5;   ip地址指向i2
+  std::cout << "*ip = " << *ip << '\n'
+            << "i = " << i << '\n'
+            << std::endl;
+  std::cout << "ir = " << ir << std::endl;
+}
+
 int main() {
   // ..
-  int A[] = {9, 2, 3, -1, 5, 10, 9, 15};
+  int A[] = {19, 2, 3, -1, 5, 10, 9, 15};
   int lo = 0, hi = 7;
   max2(A, lo, hi);
   // test_move_right();
+  // test_ptr();
   return 0;
 }
 
