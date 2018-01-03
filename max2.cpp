@@ -14,6 +14,8 @@
 
 int max2(int A[], int lo, int hi);
 int max2_three_iters(int A[], int lo, int hi);
+int print_array(int A[], int lo, int hi);
+
 
 int max2_three_iters(int A[], int lo, int hi) {
   int max1 = 0, max2 = 0;
@@ -35,7 +37,8 @@ int max2_three_iters(int A[], int lo, int hi) {
             << " A[x2] = " << A[x2] << std::endl;
 }
 
-int max2(int A[], int lo, int hi) {
+// 做一次循环，改变指针所指向的对象，x1指向最大值, x2指向次大值, 先比较x2
+int max2_one_iter(int A[], int lo, int hi) {
   // 遍历一次，改变指针
   int* x1 = &lo;
   int lo_next = lo + 1;
@@ -65,10 +68,48 @@ int max2(int A[], int lo, int hi, int & x1, int &x2) {
 */
 
 
-// 分析:
-// 被分解成两个相似问题，mid_sum(n/2)
-// 规模每次缩减一半，最后到达递归基
-// 将多个问题结果合并
+// 递归分成两部分, 左边的最大值和右边的最大值比较, 得到最大值;
+// 较小的值和最大值列表中的次大值比较, 得到整体的次大值
+
+void max2(int A[], int lo, int hi, int & x1, int & x2) {     // [lo, hi)
+  if (lo + 2 == hi) {
+    if (A[lo] < A[lo+1]) {
+      x1 = A[lo+1]; x2 = A[lo];
+    } else {
+      x2 = A[lo+1]; x1 = A[lo];
+    }
+    return;
+  }                         // T(2) = 1
+  if (lo + 3 == hi) {       // lo, lo+1, lo+2, lo+3; 19, 2, 3, -1;
+    x1 = lo, x2 = lo+1;
+    if (A[x1] < A[x2]) {x1 = lo+1; x2 = lo;}
+    for (int i = lo+2; i < hi+1; i++) {
+      if (A[i] > A[x2]) {
+        if (A[i] > A[x1]) {
+          int tmp = x1;
+          x1 = i; x2 = tmp;
+          break;
+        }
+        x2 = i;
+      }
+    }
+    return;
+  }                         // T(3) <= 3
+  int mid = (lo + hi) >> 1;
+  int x1L, x2L; max2(A, lo, mid, x1L, x2L);
+  int x1R, x2R; max2(A, mid+1, hi, x1R, x2R);
+  if (A[x1L] > A[x1R]) {
+    x1 = x1L; x2 = (x2L < x1R) ? x1R:x2L;
+  } else {
+    x1 = x1R; x2 = (x2R < x1L) ? x1L:x2R;
+  }
+}
+
+int print_array(int A[], int lo, int hi) {
+  std::cout << "-- -----array-------- --" << std::endl;
+  for (int i = lo; i < hi+1; i++)
+    std::cout << i << " : " << A[i] << std::endl;
+}
 
 void test_ptr() {
   int i = 5, i2 = 2;
@@ -85,9 +126,13 @@ void test_ptr() {
 
 int main() {
   // ..
-  int A[] = {19, 2, 3, -1, 5, 10, 9, 15};
+  int A[] = {13, 2, -1, 3, 5, 15, 9, 19};
   int lo = 0, hi = 7;
-  max2(A, lo, hi);
+  int x1, x2;
+  max2(A, lo, hi, x1, x2);
+  std::cout << "-- -------------- --\n" <<"A[x1] = " << A[x1]
+            << " A[x2] = " << A[x2] << std::endl;
+  // print_array(A, lo, hi);
   // test_move_right();
   // test_ptr();
   return 0;
