@@ -23,13 +23,12 @@ template <typename T> class Vector {   // 向量模板类
   void copyFrom(T* const A, Rank lo, Rank hi);
   Vector(int c = DEAFAULT_CAPACITY)
   {_elem = new T[_capacity = c]; _size = 0;}     // 默认
-  Vector(T const * A, Rank lo, Rank hi)          // 数组区间复制
+  Vector(T* const A, Rank lo, Rank hi)          // 数组区间复制
   {copyFrom(A, lo, hi);}
   Vector(Vector<T> const& V, Rank lo, Rank hi)   // 向量区间复制
   {copyFrom(V, lo, hi);}
   Vector(Vector<T> const& V)                     // 向量整体复制
   {copyFrom(V._elem, 0, V._size);}
-  
   //  */
   // /* ... 析构函数
   ~Vector() {delete [] _elem;}                   // 释放内部空间
@@ -43,7 +42,7 @@ template <typename T>
 void Vector<T>::copyFrom(T* const A, Rank lo, Rank hi) {
   _elem = new T[_capacity = 2*(hi- lo)];      // 分配空间
   _size = 0;  // 清零规模
-  while (lo < hi)  // A[lo, hi)中的元素逐一
+  while (lo < hi)   // A[lo, hi)中的元素逐一
     _elem[_size++] = A[lo++];
 }
 
@@ -60,7 +59,6 @@ int main() {
   // vec.sort();
   // vec.search();
   // vec.uniquify();
-  
   // print vector;
   for (int i = 0; i < vec.size(); i++) {
     std::cout << vec[i] << std::endl;
@@ -73,7 +71,8 @@ int main() {
   Rank vr = vi;
   std::cout << "vi = " << vi << '\n'
             << "vr = " << vr << std::endl;
-  Rank lo = 0, hi = 3;
+
+  Rank lo = 0, hi = 5;
   int iarr[] = {1, 3, 5, 7, 2};
   std::cout << "iarr = " << iarr << std::endl;
   Vector<int> v(iarr, lo, hi);
