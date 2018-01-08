@@ -33,6 +33,10 @@ template <typename T> class Vector {   // 向量模板类
   // 测试寻秩访问
   T t;
 
+  void insert(const int value, const Rank r);
+  // 输出Vector对应容量位置上的所有元素
+  void print_vector() const;
+
   // /* ... 构造函数 */
   Vector(int c = DEAFAULT_CAPACITY)
   {_elem = new T[_capacity = c]; _size = 0;}     // 默认
@@ -102,6 +106,33 @@ T& Vector<T>::operator[](Rank r) const {   // 不改变数据成员, 定义成�
   return _elem[r];
 }
 
+template <typename T>
+void Vector<T>::insert(const int value, const Rank r) {
+  // 检查移动后是否需要扩容
+  if (++_size > _capacity) expand();
+  // 将秩为r后的所有元素后移一位
+  for (Rank i = _size-2; i >= r; i--) {     // 为了不覆盖数据, 从尾部开始移动
+    _elem[i+1] = _elem[i];     // 向后移动一位
+  }
+  // 在r秩位置上填入要插入的值
+  _elem[r] = value;
+}
+
+template <typename T>
+void Vector<T>::print_vector() const {
+  std::cout << "-- --------print_vector--------- --\n"
+            << "_size = " << _size << '\n'
+            << "_capacity = " << _capacity << std::endl;
+  for (int i = 0; i < _capacity; i++)
+    std::cout << i << ':' << _elem[i] << std::endl;
+}
+
+
+
+
+
+
+
 int main() {
   // ...
   /*
@@ -135,12 +166,21 @@ int main() {
   std::cout << "*iarr = " << *iarr << std::endl;
   Vector<int> v(iarr, lo, hi);
 
+  // -- ----test operator[] ---------- --
   std::cout << "v[2] = " << v[2] << std::endl;
   v.t = v[2] + v[3];  // 寻秩访问返回值作为右值
   Vector<int> vi2(iarr, lo+2, hi);
   vi2[2] = v.t;       // 寻秩访问返回值作为左值
   std::cout << "v.t = " << v.t << std::endl;
   std::cout << "vi2[2] = " << vi2[2] << std::endl;
+  v.print_vector();
+
+  // -- ----tesr insert() ----------- --
+  std::cout << "-- ----tesr insert() ----------- --" << std::endl;
+  int insertValue = 12;
+  Rank insertRank = 3;
+  v.insert(insertValue, insertRank);
+  v.print_vector();
   return 0;
 }
 
