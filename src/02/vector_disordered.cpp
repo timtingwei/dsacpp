@@ -33,7 +33,7 @@ template <typename T> class Vector {   // 向量模板类
   // 测试寻秩访问
   T t;
 
-  void insert(const int value, const Rank r);
+  void insert(const Rank r, T const &e);
   // 输出Vector对应容量位置上的所有元素
   void print_vector() const;
 
@@ -106,8 +106,10 @@ T& Vector<T>::operator[](Rank r) const {   // 不改变数据成员, 定义成�
   return _elem[r];
 }
 
+// 插入
+/* my test
 template <typename T>
-void Vector<T>::insert(const int value, const Rank r) {
+void Vector<T>::insert(const Rank r, const int value) {
   // 检查移动后是否需要扩容
   if (++_size > _capacity) expand();
   // 将秩为r后的所有元素后移一位
@@ -116,6 +118,16 @@ void Vector<T>::insert(const int value, const Rank r) {
   }
   // 在r秩位置上填入要插入的值
   _elem[r] = value;
+}
+*/
+template <typename T>
+void Vector<T>::insert(const Rank r, T const &e) {
+  // value不应该是某一中特点的类型, 而应该利用template的特性
+  assert(0<= r && r < _size);
+  expand();  // 若有必要扩容  结合expand()中, _size < _capacity的定义
+  for (int i = _size; i > r; i--)  // 习惯把改变后的值的索引设置成i
+    _elem[i] = _elem[i-1];     // 后继元素顺次后移一个单元
+  _elem[r] = e; _size++;
 }
 
 template <typename T>
@@ -179,8 +191,13 @@ int main() {
   std::cout << "-- ----tesr insert() ----------- --" << std::endl;
   int insertValue = 12;
   Rank insertRank = 3;
-  v.insert(insertValue, insertRank);
-  v.print_vector();
+  // v.insert(insertValue, insertRank);
+  // v.print_vector();
+  int insertCount = 7;
+  while (insertCount--) {
+    v.insert(insertRank, insertValue);
+    v.print_vector();
+  }
   return 0;
 }
 
