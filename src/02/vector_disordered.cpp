@@ -28,8 +28,10 @@ template <typename T> class Vector {   // 向量模板类
   void copyFrom(T* const A, Rank lo, Rank hi);
   // 扩容空间
   void expand();
-
+  // 寻秩访问
   T& operator[](Rank r) const;
+  // 测试寻秩访问
+  T t;
 
   // /* ... 构造函数 */
   Vector(int c = DEAFAULT_CAPACITY)
@@ -134,6 +136,11 @@ int main() {
   Vector<int> v(iarr, lo, hi);
 
   std::cout << "v[2] = " << v[2] << std::endl;
+  v.t = v[2] + v[3];  // 寻秩访问返回值作为右值
+  Vector<int> vi2(iarr, lo+2, hi);
+  vi2[2] = v.t;       // 寻秩访问返回值作为左值
+  std::cout << "v.t = " << v.t << std::endl;
+  std::cout << "vi2[2] = " << vi2[2] << std::endl;
   return 0;
 }
 
