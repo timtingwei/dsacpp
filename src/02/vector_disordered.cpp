@@ -29,7 +29,7 @@ template <typename T> class Vector {   // 向量模板类
   // 扩容空间
   void expand();
 
-  T& operator[](size_t n);
+  T& operator[](Rank r) const;
 
   // /* ... 构造函数 */
   Vector(int c = DEAFAULT_CAPACITY)
@@ -85,13 +85,20 @@ void Vector<T>::expand() {
 */
 
 // 寻秩访问
-// my test
+/* // my test
 template <typename T>
 T& Vector<T>::operator[](std::size_t n) {    // 这个类 Vector<T>
   assert(n < _size);
   return _elem[n];
 }
+*/
 
+template <typename T>
+T& Vector<T>::operator[](Rank r) const {   // 不改变数据成员, 定义成常量成员函数
+  // 在vector内部, 定义了秩的类型, 统一用Rank
+  assert(r < _size);   // 对下标秩进行溢出检测
+  return _elem[r];
+}
 
 int main() {
   // ...
