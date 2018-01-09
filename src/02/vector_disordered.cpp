@@ -32,8 +32,10 @@ template <typename T> class Vector {   // 向量模板类
   T& operator[](Rank r) const;
   // 测试寻秩访问
   T t;
-
+  // 按秩插入
   void insert(const Rank r, T const &e);
+  // 删除区间元素
+  void del(const Rank lo, const Rank hi);
   // 输出Vector对应容量位置上的所有元素
   void print_vector() const;
 
@@ -68,7 +70,7 @@ void Vector<T>::expand() {
   // _capacity = max(_capacity, DEAFAULT_CAPACITY);    // 不小于最小容量
   // 存储旧元素, 新数组容量扩大一倍
   T* old_elem = _elem; _elem = new T[_capacity <<= 1];
-  for (int i = 0; i < _size; i++) {
+  for (Rank i = 0; i < _size; i++) {
     _elem[i] = old_elem[i];   // 复制原数组到新数组的对应位置
   }
   delete [] old_elem;    // 释放原数组的对应空间，归还系统
@@ -139,6 +141,24 @@ void Vector<T>::print_vector() const {
     std::cout << i << ':' << _elem[i] << std::endl;
 }
 
+template <typename T>
+void Vector<T>::del(const Rank lo, const Rank hi) {
+  for (Rank i = lo; i < _size-(hi-lo); i++) {
+    // 元素前移hi-lo个单位
+    _elem[i] = _elem[i+(hi-lo)];
+    // 移动后该单位为空
+    _elem[i+(hi-lo)] = 0;
+  }
+  // for (Rank i = hi; i < hi+(hi - lo); i++) {
+    // 处理i越界的情况
+  //   if (i < _size) {
+  //     _elem[i - (hi-lo)] = _elem[i];
+  //     _elem[i] = 0;
+  //   }
+  // }
+  // 缩短规模和空间容量
+  _size -= hi-lo; _capacity -= hi-lo;
+}
 
 
 
@@ -193,11 +213,17 @@ int main() {
   Rank insertRank = 3;
   // v.insert(insertValue, insertRank);
   // v.print_vector();
-  int insertCount = 7;
+  int insertCount = 2;
   while (insertCount--) {
     v.insert(insertRank, insertValue);
     v.print_vector();
   }
+
+  // -- -------test del() ---------------- --
+  std::cout << "-- -------test del() ---------------- --" << std::endl;
+  Rank del_lo = 2, del_hi = 4;
+  v.del(del_lo, del_hi);
+  v.print_vector();
   return 0;
 }
 
