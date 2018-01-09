@@ -28,6 +28,8 @@ template <typename T> class Vector {   // 向量模板类
   void copyFrom(T* const A, Rank lo, Rank hi);
   // 扩容空间
   void expand();
+  // 缩容空间
+  void shrunk();
   // 寻秩访问
   T& operator[](Rank r) const;
   // 测试寻秩访问
@@ -91,6 +93,19 @@ void Vector<T>::expand() {
   delete [] new_elem;    // 释放临时数组的对应空间，归还系统
 }
 */
+
+template <typename T>
+void Vector<T>::shrunk() {
+  if (_size > (_capacity >> 1)) return;   // 规模大于1/2不必缩容
+  _capacity = std::max(_capacity, DEAFAULT_CAPACITY);
+  // 储存一份旧元素
+  T* old_elem = _elem;
+  for (Rank r = 0; r < _size; r++) {
+    _elem[r] = old_elem[r];
+  }
+  // 删除旧元素的内存空间
+  delete [] old_elem;
+}
 
 // 寻秩访问
 /* // my test
@@ -173,6 +188,7 @@ int Vector<T>::del(Rank lo, Rank hi) {
   }
   // 更新规模或者缩容
   _size = lo;
+  shrunk();
   // 返回被删除元素的数目
   return hi-lo;
 }
@@ -242,7 +258,7 @@ int main() {
 
   // -- -------test del() ---------------- --
   std::cout << "-- -------test del() ---------------- --" << std::endl;
-  Rank del_lo = 0, del_hi = 4;
+  Rank del_lo = 0, del_hi = 6;
   v.del(del_lo, del_hi);
   v.print_vector();
   return 0;
