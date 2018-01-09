@@ -45,7 +45,7 @@ template <typename T> class Vector {   // 向量模板类
   // 删除单元素的操作
   T& remove(Rank r);
   // 唯一化
-  void set(Rank lo, Rank hi);
+  int deduplicate();
 
 
   // 输出Vector对应容量位置上的所有元素
@@ -252,8 +252,9 @@ T& Vector<T>::remove(Rank r) {  // O(n-r)
 }
 
 // 唯一化
+/*
 template <typename T>
-void Vector<T>::set(Rank lo, Rank hi) {
+void Vector<T>::deduplicate(Rank lo, Rank hi) {
   // 对向量中的元素遍历,
   for (Rank i = lo; i < hi; i++) {
     // find右往左查, 返回lo-1代表失败
@@ -262,6 +263,21 @@ void Vector<T>::set(Rank lo, Rank hi) {
     if (find(i+1, hi, _elem[i]) != i) { remove(i);}
   }
 }
+*/
+
+template <typename T>
+int Vector<T>::deduplicate() {
+  int old_size = _size;
+  Rank i = 1;
+  while (i < _size) {
+    find(0, i, _elem[i]) < 0 ?
+                             i++  // 小于0说明无雷同, 继续查找
+                             : remove(i);    // 删除雷同者(至多一个?!)
+  }
+  return  old_size - _size;      // 返回规模的变化量
+}
+
+
 
 
 int main() {
@@ -337,10 +353,10 @@ int main() {
   Rank remove_r = 3;
   std::cout << "v.remove(remove_r) = " << v.remove(remove_r) << std::endl;
   v.print_vector();
-  // -- -------test set() ----------------- --
-  std::cout << "-- -------test set() ----------------- --" << std::endl;
+  // -- -------test deduplicate() ----------------- --
+  std::cout << "-- -------test deduplicate() ----------------- --" << std::endl;
   Rank set_lo = 0, set_hi = 4;
-  v.set(set_lo, set_hi);
+  v.deduplicate();
   v.print_vector();
   return 0;
 }
