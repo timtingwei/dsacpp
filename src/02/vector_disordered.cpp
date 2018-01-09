@@ -143,11 +143,37 @@ void Vector<T>::print_vector() const {
 
 template <typename T>
 void Vector<T>::del(const Rank lo, const Rank hi) {
+  // 确保Vecotr[lo,hi) 在_size内, lo < hi
+  assert(lo < hi && lo >= 0 && hi <= _size);
+  /* 错误版本, 不能完全删除
   for (Rank i = lo; i < _size-(hi-lo); i++) {
     // 元素前移hi-lo个单位
     _elem[i] = _elem[i+(hi-lo)];
     // 移动后该单位为空
     _elem[i+(hi-lo)] = 0;
+  }
+  */
+  /* 需要循环两次, 可写入一次循环
+  for (Rank i = lo; i < hi; i++) {
+    // 区间内元素清零
+    _elem[i] = 0;
+  }
+  // 循环变量为前移元素索引
+  for (Rank i = hi; i < _size; i++) {
+    _elem[i - (hi-lo)] = _elem[i];
+    _elem[i] = 0;
+  }
+  */
+
+  for (Rank i = lo; i < _size; i++) {
+    // 清空区间元素
+    if (i < hi) { _elem[i] = 0;
+    } else {
+      // 将元素整体前移
+      _elem[i - (hi-lo)] = _elem[i];
+      // 前移后元素清空
+       _elem[i] = 0;
+    }
   }
   // 缩短规模和空间容量
   _size -= hi-lo; _capacity -= hi-lo;
@@ -187,7 +213,7 @@ int main() {
             << "vr = " << vr << std::endl;
 
   Rank lo = 0, hi = 5;
-  int iarr[] = {1, 3, 5, 7, 2};
+  int iarr[] = {1, 3, 5, 7, 9};
   std::cout << "*iarr = " << *iarr << std::endl;
   Vector<int> v(iarr, lo, hi);
 
@@ -214,7 +240,7 @@ int main() {
 
   // -- -------test del() ---------------- --
   std::cout << "-- -------test del() ---------------- --" << std::endl;
-  Rank del_lo = 2, del_hi = 4;
+  Rank del_lo = 1, del_hi = 3;
   v.del(del_lo, del_hi);
   v.print_vector();
   return 0;
