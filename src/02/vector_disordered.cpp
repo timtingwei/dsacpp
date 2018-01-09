@@ -30,8 +30,12 @@ template <typename T> class Vector {   // 向量模板类
   void expand();
   // 缩容空间
   void shrunk();
-  // 寻秩访问
+  // 寻秩访问, 重载[]运算符
   T& operator[](Rank r) const;
+  // 重载前置++操作符
+  T& operator++();
+  // 重载后置++操作符
+  T* operator++(int);
   // 测试寻秩访问
   T t;
   // 按秩插入
@@ -46,9 +50,9 @@ template <typename T> class Vector {   // 向量模板类
   T& remove(Rank r);
   // 唯一化
   int deduplicate();
-  // 重载++操作符
+
   // 测试++操作符
-  t_f++;
+  // t_f++;
 
 
   // 输出Vector对应容量位置上的所有元素
@@ -288,6 +292,24 @@ struct Increase {
 */
 
 
+// 重载前置++操作符
+template <typename T>
+T& Vector<T>::operator++() {
+  // 所有元素都+1
+  for (Rank i = 0; i < _size; i++)
+    _elem[i]++;
+  return *_elem;     // 返回+1后的数据
+}
+
+template <typename T>
+T* Vector<T>::operator++(int i) {
+  T* e = _elem;      // 备份当前元素
+  // for (Rank i = 0; i < _size; i++)
+  //   _elem[i]++;   // 循环递增所有元素
+  ++*this;           // 调用前置递增++, 递增所有元素
+  return e;          // 返回递增前的元素
+}
+
 
 int main() {
   // ...
@@ -366,6 +388,12 @@ int main() {
   std::cout << "-- -------test deduplicate() ----------------- --" << std::endl;
   Rank set_lo = 0, set_hi = 4;
   v.deduplicate();
+  v.print_vector();
+  // -- -------test increment ++ ------------------ --
+  std::cout << "-- -------test increment ++ ------------------ --" << std::endl;
+  ++v;
+  v.print_vector();
+  v++;
   v.print_vector();
   return 0;
 }
