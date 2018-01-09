@@ -38,6 +38,10 @@ template <typename T> class Vector {   // 向量模板类
   void insert(const Rank r, T const &e);
   // 删除区间元素
   int del(Rank lo, Rank hi);
+  // 查找e在区间[lo,hi)内
+  int find(Rank lo, Rank hi, T const &e) const;
+  // 测试find()
+  T t_f = 5;
   // 输出Vector对应容量位置上的所有元素
   void print_vector() const;
 
@@ -201,6 +205,19 @@ int Vector<T>::del(Rank lo, Rank hi) {
 // 缩容不光光是改变_capacity的值, 仍旧要释放空间
 */
 
+template <typename T>
+int Vector<T>::find(Rank lo, Rank hi, T const &e) const {
+  // 查找e在区间[lo,hi)内
+  // 从右往左查找
+  while (hi >= lo) {
+    if (_elem[hi] == e) {return hi;
+    }
+    hi--;
+  }
+  // 没有在while循环中返回, 不存在匹配元素
+  return -1;
+}
+
 
 
 
@@ -227,6 +244,7 @@ int main() {
   // int arr[i = 5] = {};
   */
   // -- ------test Vector class----- --
+  std::cout << "-- ------test Vector class----- --" << std::endl;
   int vi = 5;
   Rank vr = vi;
   std::cout << "vi = " << vi << '\n'
@@ -238,6 +256,7 @@ int main() {
   Vector<int> v(iarr, lo, hi);
 
   // -- ----test operator[] ---------- --
+  std::cout << "-- ------test Vector class----- --" << std::endl;
   std::cout << "v[2] = " << v[2] << std::endl;
   v.t = v[2] + v[3];  // 寻秩访问返回值作为右值
   Vector<int> vi2(iarr, lo+2, hi);
@@ -260,8 +279,15 @@ int main() {
 
   // -- -------test del() ---------------- --
   std::cout << "-- -------test del() ---------------- --" << std::endl;
-  Rank del_lo = 0, del_hi = 6;
+  Rank del_lo = 0, del_hi = 2;
   v.del(del_lo, del_hi);
+  v.print_vector();
+
+  // -- -------test find() --------------- --
+  std::cout << "-- -------test find() --------------- --" << std::endl;
+  v.insert(4, 5);
+  Rank find_lo = 0, find_hi = 7;
+  std::cout << "v.t_f index = " << v.find(find_lo, find_hi, v.t_f) <<std::endl;
   v.print_vector();
   return 0;
 }
