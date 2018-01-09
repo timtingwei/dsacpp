@@ -67,7 +67,7 @@ void Vector<T>::copyFrom(T* const A, Rank lo, Rank hi) {
 template <typename T>
 void Vector<T>::expand() {
   if (_size < _capacity) return;    // 容量未到达不必扩容
-  // _capacity = max(_capacity, DEAFAULT_CAPACITY);    // 不小于最小容量
+  _capacity = std::max(_capacity, DEAFAULT_CAPACITY);    // 不小于最小容量
   // 存储旧元素, 新数组容量扩大一倍
   T* old_elem = _elem; _elem = new T[_capacity <<= 1];
   for (Rank i = 0; i < _size; i++) {
