@@ -149,13 +149,6 @@ void Vector<T>::del(const Rank lo, const Rank hi) {
     // 移动后该单位为空
     _elem[i+(hi-lo)] = 0;
   }
-  // for (Rank i = hi; i < hi+(hi - lo); i++) {
-    // 处理i越界的情况
-  //   if (i < _size) {
-  //     _elem[i - (hi-lo)] = _elem[i];
-  //     _elem[i] = 0;
-  //   }
-  // }
   // 缩短规模和空间容量
   _size -= hi-lo; _capacity -= hi-lo;
 }
