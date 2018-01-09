@@ -35,7 +35,7 @@ template <typename T> class Vector {   // 向量模板类
   // 按秩插入
   void insert(const Rank r, T const &e);
   // 删除区间元素
-  void del(const Rank lo, const Rank hi);
+  int del(Rank lo, Rank hi);
   // 输出Vector对应容量位置上的所有元素
   void print_vector() const;
 
@@ -141,30 +141,11 @@ void Vector<T>::print_vector() const {
     std::cout << i << ':' << _elem[i] << std::endl;
 }
 
+
+// 删除操作
+/* my test code
 template <typename T>
 void Vector<T>::del(const Rank lo, const Rank hi) {
-  // 确保Vecotr[lo,hi) 在_size内, lo < hi
-  assert(lo < hi && lo >= 0 && hi <= _size);
-  /* 错误版本, 不能完全删除
-  for (Rank i = lo; i < _size-(hi-lo); i++) {
-    // 元素前移hi-lo个单位
-    _elem[i] = _elem[i+(hi-lo)];
-    // 移动后该单位为空
-    _elem[i+(hi-lo)] = 0;
-  }
-  */
-  /* 需要循环两次, 可写入一次循环
-  for (Rank i = lo; i < hi; i++) {
-    // 区间内元素清零
-    _elem[i] = 0;
-  }
-  // 循环变量为前移元素索引
-  for (Rank i = hi; i < _size; i++) {
-    _elem[i - (hi-lo)] = _elem[i];
-    _elem[i] = 0;
-  }
-  */
-
   for (Rank i = lo; i < _size; i++) {
     // 清空区间元素
     if (i < hi) { _elem[i] = 0;
@@ -178,7 +159,28 @@ void Vector<T>::del(const Rank lo, const Rank hi) {
   // 缩短规模和空间容量
   _size -= hi-lo; _capacity -= hi-lo;
 }
+*/
 
+
+template <typename T>
+int Vector<T>::del(Rank lo, Rank hi) {
+  // 处理退化情况
+  if (lo == hi) return 0;
+  // 自前向后的迁移操作
+  while (lo < _size) {
+    if (hi < _capacity) {_elem[lo++] = _elem[hi++];
+    } else {_elem[lo++] = 0;}   // 处理hi++超出_capacityg容量的情况
+  }
+  // 更新规模或者缩容
+  _size = lo;
+  // 返回被删除元素的数目
+  return hi-lo;
+}
+// 规模仍旧不变? 删除一段区间, 这里可以不改变规模, 相当于后面留空?
+// _elem[hi++]能够被一直索引到? 超过_capacity时, 返回未定义的值
+// _elem[hi++]为什么不清空? 把_capacity的剩余空间对应元素赋值给它的方法清空
+// 看出移动操作过程中, 变量的同步性
+// 缩容不光光是改变_capacity的值, 仍旧要释放空间
 
 
 
@@ -240,7 +242,7 @@ int main() {
 
   // -- -------test del() ---------------- --
   std::cout << "-- -------test del() ---------------- --" << std::endl;
-  Rank del_lo = 1, del_hi = 3;
+  Rank del_lo = 0, del_hi = 4;
   v.del(del_lo, del_hi);
   v.print_vector();
   return 0;
