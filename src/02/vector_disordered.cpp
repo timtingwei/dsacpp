@@ -44,6 +44,10 @@ template <typename T> class Vector {   // 向量模板类
   T t_f = 8;
   // 删除单元素的操作
   T& remove(Rank r);
+  // 唯一化
+  void set(Rank lo, Rank hi);
+
+
   // 输出Vector对应容量位置上的所有元素
   void print_vector() const;
 
@@ -247,6 +251,18 @@ T& Vector<T>::remove(Rank r) {  // O(n-r)
   return old_t;           // 返回被删除元素
 }
 
+// 唯一化
+template <typename T>
+void Vector<T>::set(Rank lo, Rank hi) {
+  // 对向量中的元素遍历,
+  for (Rank i = lo; i < hi; i++) {
+    // find右往左查, 返回lo-1代表失败
+    // 删除当前元素, 不再对后续元素查找
+    if (find(lo, i, _elem[i]) != lo-1) {remove(i); break;}
+    if (find(i+1, hi, _elem[i]) != i) { remove(i);}
+  }
+}
+
 
 int main() {
   // ...
@@ -320,6 +336,11 @@ int main() {
   std::cout << "-- -------test remove() -------------- --" << std::endl;
   Rank remove_r = 3;
   std::cout << "v.remove(remove_r) = " << v.remove(remove_r) << std::endl;
+  v.print_vector();
+  // -- -------test set() ----------------- --
+  std::cout << "-- -------test set() ----------------- --" << std::endl;
+  Rank set_lo = 0, set_hi = 4;
+  v.set(set_lo, set_hi);
   v.print_vector();
   return 0;
 }
