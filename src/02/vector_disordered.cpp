@@ -46,6 +46,9 @@ template <typename T> class Vector {   // 向量模板类
   T& remove(Rank r);
   // 唯一化
   int deduplicate();
+  // 重载++操作符
+  // 测试++操作符
+  t_f++;
 
 
   // 输出Vector对应容量位置上的所有元素
@@ -277,6 +280,12 @@ int Vector<T>::deduplicate() {
   return  old_size - _size;      // 返回规模的变化量
 }
 
+/*
+template <typename T>
+struct Increase {
+  virtual void operator()(T &e) {e++;}
+};
+*/
 
 
 
