@@ -18,7 +18,8 @@
 typedef int Rank;             // 秩
 #define DEAFAULT_CAPACITY 3   // 默认初始容量
 
-template <typename T> class Vector {   // 向量模板类
+template <typename T>
+class Vector {   // 向量模板类
  private:
   Rank _size; int _capacity; T* _elem;   // 规模, 容量, 数据区
  protected:
@@ -36,6 +37,8 @@ template <typename T> class Vector {   // 向量模板类
   T& operator++();
   // 重载后置++操作符
   T* operator++(int);
+  // 测试++操作符
+  // t_f++;
   // 测试寻秩访问
   T t;
   // 按秩插入
@@ -51,8 +54,11 @@ template <typename T> class Vector {   // 向量模板类
   // 唯一化
   int deduplicate();
 
-  // 测试++操作符
-  // t_f++;
+
+  // 单个T类型元素加1的类
+  struct Increase {};
+
+  template <typename VST> void traverse(VST visit);
 
 
   // 输出Vector对应容量位置上的所有元素
@@ -284,13 +290,6 @@ int Vector<T>::deduplicate() {
   return  old_size - _size;      // 返回规模的变化量
 }
 
-/*
-template <typename T>
-struct Increase {
-  virtual void operator()(T &e) {e++;}
-};
-*/
-
 
 // 重载前置++操作符
 template <typename T>
@@ -301,6 +300,7 @@ T& Vector<T>::operator++() {
   return *_elem;     // 返回+1后的数据
 }
 
+// 重载后置++操作符
 template <typename T>
 T* Vector<T>::operator++(int i) {
   T* e = _elem;      // 备份当前元素
@@ -308,6 +308,23 @@ T* Vector<T>::operator++(int i) {
   //   _elem[i]++;   // 循环递增所有元素
   ++*this;           // 调用前置递增++, 递增所有元素
   return e;          // 返回递增前的元素
+}
+
+
+// 单个T类型元素加1的类
+template <typename T>
+struct Increase {
+  virtual void operator()(T &e) {e++;}    // Increase<T>()实现函数功能  
+};
+
+template <typename T> template <typename VST>
+void Vector<T>::traverse(VST visit) {       // 函数对象, 全局修改 
+  for (int i = 0; i < _size; i++) visit(_elem[i]);
+}
+
+template <typename T>
+void increase(Vector<T> & V) {
+  V.traverse(Increase<T>());
 }
 
 
@@ -394,6 +411,11 @@ int main() {
   ++v;
   v.print_vector();
   v++;
+  v.print_vector();
+
+  // -- ------test traverse() --------------------- --
+  std::cout << "-- ------test traverse() --------------------- --" << std::endl;
+  increase(v);
   v.print_vector();
   return 0;
 }
