@@ -96,10 +96,10 @@ void Vector<T>::expand() {
 
 template <typename T>
 void Vector<T>::shrunk() {
-  if (_size > (_capacity >> 1)) return;   // 规模大于1/2不必缩容
+  if (_size > (_capacity/4)) return;   // 规模大于1/2不必缩容
   _capacity = std::max(_capacity, DEAFAULT_CAPACITY);
-  // 储存一份旧元素
-  T* old_elem = _elem;
+  // 储存一份旧元素, 创建新的数据空间
+  T* old_elem = _elem; _elem = new T[_capacity >>= 1];
   for (Rank r = 0; r < _size; r++) {
     _elem[r] = old_elem[r];
   }
@@ -189,16 +189,17 @@ int Vector<T>::del(Rank lo, Rank hi) {
   }
   // 更新规模或者缩容
   _size -= length;
-  // shrunk();
+  shrunk();
   // 返回被删除元素的数目
   return hi-lo;
 }
-// 规模仍旧不变? 删除一段区间, 这里可以不改变规模, 相当于后面留空?
+/*
+// 规模仍旧不变? 删除一段区间, 这里可以不改变规模, 相当于后面留空? 改进成改变size的版本用于shrunk
 // _elem[hi++]能够被一直索引到? 超过_capacity时, 返回未定义的值
 // _elem[hi++]为什么不清空? 把_capacity的剩余空间对应元素赋值给它的方法清空
 // 看出移动操作过程中, 变量的同步性
 // 缩容不光光是改变_capacity的值, 仍旧要释放空间
-
+*/
 
 
 
