@@ -42,6 +42,8 @@ template <typename T> class Vector {   // 向量模板类
   Rank find(Rank lo, Rank hi, T const &e) const;
   // 测试find()
   T t_f = 8;
+  // 删除单元素的操作
+  void remove(Rank r);
   // 输出Vector对应容量位置上的所有元素
   void print_vector() const;
 
@@ -231,6 +233,13 @@ Rank Vector<T>::find(Rank lo, Rank hi, T const &e) const {
 // 返回hi? 将判断是否成功, 交给上层的调用者;以及成功后被上层算法进一步利用
 
 
+template <typename T>
+void Vector<T>::remove(Rank r) {
+  // 单元素的删除操作, 视为区间操作的特例 [r, r+1)
+  del(r, r+1);
+}
+
+
 int main() {
   // ...
   /*
@@ -298,6 +307,11 @@ int main() {
   v.insert(4, 5);
   Rank find_lo = 0, find_hi = 7;
   std::cout << "v.t_f index = " << v.find(find_lo, find_hi, v.t_f) <<std::endl;
+  v.print_vector();
+  // -- -------test remove() -------------- --
+  std::cout << "-- -------test remove() -------------- --" << std::endl;
+  Rank remove_r = 3;
+  v.remove(remove_r);
   v.print_vector();
   return 0;
 }
