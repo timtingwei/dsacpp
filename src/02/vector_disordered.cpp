@@ -39,6 +39,10 @@ class Vector {   // 向量模板类
   T* operator++(int);
   // 测试++操作符
   // t_f++;
+  // 重载前置--操作符
+  T& operator--();
+  // 重载后置--操作符
+  T* operator--(int i);
   // 测试寻秩访问
   T t;
   // 按秩插入
@@ -328,6 +332,25 @@ void increase(Vector<T> & V) {
 }
 
 
+template <typename T>
+T& Vector<T>::operator--() {          // 重载前置--操作符
+  for (int i = 0; i < _size; i++)
+    _elem[i]--;                    // 对每个元素-1
+  return *_elem;                    // 返回当前 *this or *_elem
+}
+
+// 为什么返回*_elem 而不是 *this??
+// 递减运算符重载函数的返回类型, 的返回类型是int&
+  //, *this的类型为Vector<int>, 而*_elem 的类型是int
+
+template <typename T>
+T* Vector<T>::operator--(int i) {          // 重载后置--操作符
+  T* e = _elem;
+  --*this;                         // 调用前置递减
+  return e;
+}
+
+
 int main() {
   // ...
   /*
@@ -416,6 +439,13 @@ int main() {
   // -- ------test traverse() --------------------- --
   std::cout << "-- ------test traverse() --------------------- --" << std::endl;
   increase(v);
+  v.print_vector();
+
+  // -- ------test decrement -- ------------------ --
+  std::cout << "-- ------test decrement -- ------------------ --" << std::endl;
+  --v;
+  v.print_vector();
+  v--;
   v.print_vector();
   return 0;
 }
