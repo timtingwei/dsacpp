@@ -39,9 +39,9 @@ template <typename T> class Vector {   // 向量模板类
   // 删除区间元素
   int del(Rank lo, Rank hi);
   // 查找e在区间[lo,hi)内
-  int find(Rank lo, Rank hi, T const &e) const;
+  Rank find(Rank lo, Rank hi, T const &e) const;
   // 测试find()
-  T t_f = 5;
+  T t_f = 8;
   // 输出Vector对应容量位置上的所有元素
   void print_vector() const;
 
@@ -205,6 +205,8 @@ int Vector<T>::del(Rank lo, Rank hi) {
 // 缩容不光光是改变_capacity的值, 仍旧要释放空间
 */
 
+// 查找
+/* my test code
 template <typename T>
 int Vector<T>::find(Rank lo, Rank hi, T const &e) const {
   // 查找e在区间[lo,hi)内
@@ -217,8 +219,16 @@ int Vector<T>::find(Rank lo, Rank hi, T const &e) const {
   // 没有在while循环中返回, 不存在匹配元素
   return -1;
 }
+*/
 
-
+template <typename T>
+Rank Vector<T>::find(Rank lo, Rank hi, T const &e) const {
+  // O(hi - lo) = O(n), 在命中多个元素时可返回秩最大者
+  while (lo < hi-- && e != _elem[hi]) {}   // 逆向查找
+  return hi;   // hi < lo失败; 否则hi即命中元素的秩
+}
+// 利用while本身的条件语句；后置递增的特性
+// 返回hi? 将判断是否成功, 交给上层的调用者;以及成功后被上层算法进一步利用
 
 
 int main() {
