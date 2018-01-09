@@ -37,13 +37,13 @@ template <typename T> class Vector {   // 向量模板类
   // 按秩插入
   void insert(const Rank r, T const &e);
   // 删除区间元素
-  int del(Rank lo, Rank hi);
+  int remove(Rank lo, Rank hi);
   // 查找e在区间[lo,hi)内
   Rank find(Rank lo, Rank hi, T const &e) const;
   // 测试find()
   T t_f = 8;
   // 删除单元素的操作
-  void remove(Rank r);
+  T& remove(Rank r);
   // 输出Vector对应容量位置上的所有元素
   void print_vector() const;
 
@@ -166,7 +166,7 @@ void Vector<T>::print_vector() const {
 // 删除操作
 /* my test code
 template <typename T>
-void Vector<T>::del(const Rank lo, const Rank hi) {
+void Vector<T>::remove(const Rank lo, const Rank hi) {
   for (Rank i = lo; i < _size; i++) {
     // 清空区间元素
     if (i < hi) { _elem[i] = 0;
@@ -184,7 +184,7 @@ void Vector<T>::del(const Rank lo, const Rank hi) {
 
 
 template <typename T>
-int Vector<T>::del(Rank lo, Rank hi) {
+int Vector<T>::remove(Rank lo, Rank hi) {
   // 处理退化情况
   if (lo == hi) return 0;
   const int length = hi - lo;
@@ -232,11 +232,19 @@ Rank Vector<T>::find(Rank lo, Rank hi, T const &e) const {
 // 利用while本身的条件语句；后置递增的特性
 // 返回hi? 将判断是否成功, 交给上层的调用者;以及成功后被上层算法进一步利用
 
-
+// 删除单个元素
+/* my test code
 template <typename T>
 void Vector<T>::remove(Rank r) {
   // 单元素的删除操作, 视为区间操作的特例 [r, r+1)
-  del(r, r+1);
+  remove(r, r+1);
+}
+*/
+template <typename T>     // 删除向量中秩为r的元素, 0 <= r < size
+T& Vector<T>::remove(Rank r) {  // O(n-r)
+  T& old_t = _elem[r];    // 备份被删除的元素
+  remove(r, r+1);         // 调用区间删除算法
+  return old_t;           // 返回被删除元素
 }
 
 
@@ -263,29 +271,29 @@ int main() {
   // int arr[i = 5] = {};
   */
   // -- ------test Vector class----- --
-  std::cout << "-- ------test Vector class----- --" << std::endl;
+  // std::cout << "-- ------test Vector class----- --" << std::endl;
   int vi = 5;
   Rank vr = vi;
-  std::cout << "vi = " << vi << '\n'
-            << "vr = " << vr << std::endl;
+  // std::cout << "vi = " << vi << '\n'
+  //           << "vr = " << vr << std::endl;
 
   Rank lo = 0, hi = 5;
   int iarr[] = {1, 3, 5, 7, 9};
-  std::cout << "*iarr = " << *iarr << std::endl;
+  // std::cout << "*iarr = " << *iarr << std::endl;
   Vector<int> v(iarr, lo, hi);
 
   // -- ----test operator[] ---------- --
-  std::cout << "-- ------test Vector class----- --" << std::endl;
-  std::cout << "v[2] = " << v[2] << std::endl;
+  // std::cout << "-- ------test operator----- --" << std::endl;
+  // std::cout << "v[2] = " << v[2] << std::endl;
   v.t = v[2] + v[3];  // 寻秩访问返回值作为右值
   Vector<int> vi2(iarr, lo+2, hi);
   vi2[2] = v.t;       // 寻秩访问返回值作为左值
-  std::cout << "v.t = " << v.t << std::endl;
-  std::cout << "vi2[2] = " << vi2[2] << std::endl;
-  v.print_vector();
+  // std::cout << "v.t = " << v.t << std::endl;
+  // std::cout << "vi2[2] = " << vi2[2] << std::endl;
+  // v.print_vector();
 
   // -- ----tesr insert() ----------- --
-  std::cout << "-- ----tesr insert() ----------- --" << std::endl;
+  // std::cout << "-- ----tesr insert() ----------- --" << std::endl;
   int insertValue = 12;
   Rank insertRank = 3;
   // v.insert(insertValue, insertRank);
@@ -293,13 +301,13 @@ int main() {
   int insertCount = 2;
   while (insertCount--) {
     v.insert(insertRank, insertValue);
-    v.print_vector();
+    // v.print_vector();
   }
 
-  // -- -------test del() ---------------- --
-  std::cout << "-- -------test del() ---------------- --" << std::endl;
+  // -- -------test remove() ---------------- --
+  std::cout << "-- -------test remove() ---------------- --" << std::endl;
   Rank del_lo = 0, del_hi = 2;
-  v.del(del_lo, del_hi);
+  v.remove(del_lo, del_hi);
   v.print_vector();
 
   // -- -------test find() --------------- --
@@ -311,7 +319,7 @@ int main() {
   // -- -------test remove() -------------- --
   std::cout << "-- -------test remove() -------------- --" << std::endl;
   Rank remove_r = 3;
-  v.remove(remove_r);
+  std::cout << "v.remove(remove_r) = " << v.remove(remove_r) << std::endl;
   v.print_vector();
   return 0;
 }
