@@ -59,10 +59,13 @@ class Vector {   // 向量模板类
   int deduplicate();
 
 
-  // 单个T类型元素加1的类
-  struct Increase {};
+  // 单个T类型元素加1的类, 函数对象机制
+  // struct Increase {};
 
   template <typename VST> void traverse(VST visit);
+
+  // 单个T类型元素加1的类, 函数对象机制
+  // struct Decrease {};
 
 
   // 输出Vector对应容量位置上的所有元素
@@ -343,6 +346,8 @@ T& Vector<T>::operator--() {          // 重载前置--操作符
 // 递减运算符重载函数的返回类型, 的返回类型是int&
   //, *this的类型为Vector<int>, 而*_elem 的类型是int
 
+
+// 运用函数对象机制遍历减一Vector中的元素
 template <typename T>
 T* Vector<T>::operator--(int i) {          // 重载后置--操作符
   T* e = _elem;
@@ -350,6 +355,44 @@ T* Vector<T>::operator--(int i) {          // 重载后置--操作符
   return e;
 }
 
+
+// 遍历运用函数对象机制，对各个元素减1
+/* my test code
+// 单个T类型元素减1的类
+template <typename T>
+Vector<T>::struct Decrease {
+  virtual void operator() {T &e--;}     // 重载()操作, 类对象当作函数来用
+};
+
+template <typename T>
+void decrease(Vector<T>& V) {
+  V.traverse(Decrease<T>());
+}
+// 泛型模板在调用的时候都要带<type>
+*/
+
+template <typename T>
+struct Decrease {
+  virtual void operator()(T &e) {e--;}
+};
+
+/*
+// 为什么不是Vector<T>::struct Decrease?
+// Decrease对象, 不需要声明在vector类内, 这是借用函数对象作为traverse的参数, traverse声明在类内, 这个参数的类型是VST, 即函数对象。
+// 为什么需要virtual
+// void operator()(T &e)?
+// 第一个括号是代表重载运算符是(), 第二个是该重载函数的参数列表
+*/
+
+template <typename T>
+void decrease(Vector<T> & V) {
+  V.traverse(Decrease<T>());
+}
+
+// 在类的外部定义decrease函数, 它具有泛型T, 参数为Vector<T>& 类型
+// 函数内部, 实例V调用traverse方法, 通过多次调用这个函数对象去遍历所有元素
+
+// 终极问题: 为什么需要函数对象or 函数指针,  为什么不直接调用函数呢?
 
 int main() {
   // ...
@@ -436,8 +479,8 @@ int main() {
   v++;
   v.print_vector();
 
-  // -- ------test traverse() --------------------- --
-  std::cout << "-- ------test traverse() --------------------- --" << std::endl;
+  // -- ------test traverse() increase()--------------------- --
+  std::cout << "-- ------test traverse() increase()------- --" << std::endl;
   increase(v);
   v.print_vector();
 
@@ -446,6 +489,10 @@ int main() {
   --v;
   v.print_vector();
   v--;
+  v.print_vector();
+  // -- ------test traverse() decrease()--------------------- --
+  std::cout << "-- ------test traverse() decrease()------- --" << std::endl;
+  decrease(v);
   v.print_vector();
   return 0;
 }
