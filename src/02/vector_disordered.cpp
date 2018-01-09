@@ -181,14 +181,15 @@ template <typename T>
 int Vector<T>::del(Rank lo, Rank hi) {
   // 处理退化情况
   if (lo == hi) return 0;
+  const int length = hi - lo;
   // 自前向后的迁移操作
   while (lo < _size) {
     if (hi < _capacity) {_elem[lo++] = _elem[hi++];
     } else {_elem[lo++] = 0;}   // 处理hi++超出_capacityg容量的情况
   }
   // 更新规模或者缩容
-  _size = lo;
-  shrunk();
+  _size -= length;
+  // shrunk();
   // 返回被删除元素的数目
   return hi-lo;
 }
