@@ -476,26 +476,17 @@ int Vector<T>::disordered() const {
 
 template <typename T>
 int Vector<T>::deduplicate_lower(int rm_arr[]) {
-  // rm_arr是保存删除对象索引数组
-  // 删除有序向量重复的元素, 返回被删除对象的数组索引
-  // Rank rm_arr[] = {};    // 删除对象索引数组
-  // Rank a = 0; Rank* pa = &a;
+  // 删除有序向量重复的元素, rm_arr是保存删除对象索引数组, 返回被删除元素的数量
   Rank n = 0;            // 数组当前插入位置
   Rank r1 = 0, r2 = 1;   // 创建两个索引值线性扫描
-  // int tmp_size = _size;  // 备份初始的数组规模
   while (r2 < _size) {
     if (_elem[r1] == _elem[r2]) {   // r2指向的元素和r1对应元素重复
       rm_arr[n++] = r2;     // 索引数组中加入r2
-      // remove(r2);        // 删除r2对应的元素
-    } else {
-      r1 = r2;
-    }
+    } else { r1 = r2;}
     r2++;    // 递增r2
   }
   remove(rm_arr, n);   // 一次性删除索引对应的元素
-  std::cout << "_elem[0]" << _elem[0] << std::endl;
   return n;            // 返回删除元素数量
-  // return pa;
 }
 
 
@@ -504,21 +495,19 @@ int Vector<T>::deduplicate_lower(int rm_arr[]) {
 // 唯一化所依赖的通过索引数组一次性remove函数
 template <typename T>
 void Vector<T>::remove(int rm_arr[], int n) {
-  // 对每个元素计算好向左移动的距离, 从左向右扫描, 从右向左移动
-  std::cout << "testing remove(int*, int)...\n"
-            << "rm_arr[0] = " << rm_arr[0] << '\n'
-      << "rm_arr[1] = " << rm_arr[1] << '\n'
-      << "rm_arr[2] = " << rm_arr[2] << '\n'
-      << "rm_arr[3] = " << rm_arr[3] << '\n'
-      << "rm_arr[4] = " << rm_arr[4] << '\n'
-            << "n = " << n << std::endl;
-  // 先得到一份保留数组的索引
+  // 删除索引除外的索引对应元素保留, 从左向右扫描
+  int i_n = 0;     // 指向rm_arr中的元素
+  int new_i = 0;   // 保留索引
   T* old_elem = _elem;    // 备份一份当前元素
-  // _size -= n;             // 刷新规模
   _elem = new T[_capacity = _capacity];
-  for (int i = 0; i < n; i++) {
-    std::cout << "rm_arr[i]" << rm_arr[i] << std::endl;
+  for (int i = 0; i < _size; i++) {
+    if (i != rm_arr[i_n]) {     // 当前索引不在表中
+      _elem[new_i++] = old_elem[i];   // 当前索引对应元素赋值给当前元素的新位置
+    } else {     // 当前索引在删除索引的表中
+      i_n++;     // 指向下一个rm_arr中的元素
+    }
   }
+  _size -= n;
   delete [] old_elem;
 }
 
