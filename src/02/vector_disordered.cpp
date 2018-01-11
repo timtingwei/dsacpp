@@ -406,9 +406,10 @@ struct Sum {
   virtual void operator()(const T& e, T* sumPtr) {(*sumPtr) += e;}
 };
 
-// 重载traverse(), 对Sum对象函数传入保存求和结果的指针
+
 template <typename T> template <typename VST>
 T& Vector<T>::traverse(VST visit, T* e) {
+  // 重载traverse(), 对Sum对象函数传入保存求和结果的指针
   for (int i = 1; i < _size; i++) visit(_elem[i], e);   // 从第二个值开始累加
   return *e;       // 返回求和结果
 }
@@ -416,9 +417,31 @@ T& Vector<T>::traverse(VST visit, T* e) {
 
 template <typename T>
 void sum_ptr(Vector<T>& V) {
-  T* sumPtr = &(V[0]);           // 别定义空指针, 该指针指向向量首位
+  T sum_init = V[0];              // 创建一个副本, 避免通过指针修改V[0]
+  T* sumPtr = &(sum_init);        // 别定义空指针, 该指针指向副本
   T sum = V.traverse(Sum<T>(), sumPtr);     // 调用并赋值
   std::cout << "sum = " << sum << std::endl;
+}
+
+// 通过类内static求和的函数对象
+template <typename T>
+struct Sum_static {
+  static T sum_t;     // 内部声明存放求和结果的static变量
+  virtual void operator()(T& e) {
+    sum_t += e; std::cout << "revise static sum_t, sum_t = "
+                          << sum_t << std::endl;    // 当心全局变量出错
+  }
+};
+
+template <typename T>
+T Sum_static<T>::sum_t = 0;   // 外部定义静态数据成员
+
+template <typename T>
+void sum_static(Vector<T> V) {
+  Sum_static<T> sumstc;           // 实例化模板别忘记<type>
+  V.traverse(Sum_static<T>());
+  T sum = sumstc.sum_t;
+  std::cout << "in sum_static, sum = " << sum << std::endl;
 }
 
 int main() {
@@ -528,6 +551,11 @@ int main() {
   // -- ------test traverse() Sum()--------------------- --
   std::cout << "-- ------test traverse() Sum()------- --" << std::endl;
   sum_ptr(v);
+  v.print_vector();
+  // -- ------test traverse() Sum_static()--------------------- --
+  std::cout << "-- ------test traverse() Sum_static()------- --" << std::endl;
+  sum_static(v);
+  // v.print_vector();
   return 0;
 }
 
