@@ -58,15 +58,7 @@ class Vector {   // 向量模板类
   // 唯一化
   int deduplicate();
 
-
-  // 单个T类型元素加1的类, 函数对象机制
-  // struct Increase {};
-
   template <typename VST> void traverse(VST visit);
-
-  // 单个T类型元素加1的类, 函数对象机制
-  // struct Decrease {};
-
 
   // 输出Vector对应容量位置上的所有元素
   void print_vector() const;
@@ -394,6 +386,16 @@ void decrease(Vector<T> & V) {
 
 // 终极问题: 为什么需要函数对象or 函数指针,  为什么不直接调用函数呢?
 
+template <typename T>
+struct Double_value {
+  virtual void operator()(T& e) {e *= 2;}   // 函数对象对元素翻倍
+};
+
+template <typename T>
+void double_value(Vector<T>& V) {
+  V.traverse(Double_value<T>());      // 函数对象作为遍历函数的参数
+}
+
 int main() {
   // ...
   /*
@@ -493,6 +495,10 @@ int main() {
   // -- ------test traverse() decrease()--------------------- --
   std::cout << "-- ------test traverse() decrease()------- --" << std::endl;
   decrease(v);
+  v.print_vector();
+  // -- ------test traverse() double_value()--------------------- --
+  std::cout << "-- ------test traverse() double_value()------- --" << std::endl;
+  double_value(v);
   v.print_vector();
   return 0;
 }
