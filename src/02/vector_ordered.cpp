@@ -56,9 +56,14 @@ class Vector {   // 向量模板类
   T& remove(Rank r);
   // 唯一化
   int deduplicate();
-
+  // ==================== 有序向量 ==============================
   // 逆序程度
   int disordered() const;
+  // 唯一化(低效)
+  Rank* deduplicate_lower(Rank* rm_arr);
+  // 为了定义 外部数组大小, 而定义的返回私有数据的函数
+  // const int get_size() const {return _size;}  // 外部大小数组不能用变量定义
+  
 
   template <typename VST> void traverse(VST visit);
   // template <typename VST> virtual void traverse(VST visit, T* e);
@@ -447,20 +452,64 @@ void sum_static(Vector<T> V) {
 }
 
 // 逆序程度
+/* my test code 
 template <typename T>
 int Vector<T>::disordered() const {
   int count = 0;
   for (int i = 0; i < _size - 1; i++)
-    if (_elem[i] != _elem[i+1]) count++;
+    if (_elem[i] != _elem[i+1]) count++;  // ERROR: 逆序:前个元素大于后一元素
   return count;
 }
+*/
+
+template <typename T>
+int Vector<T>::disordered() const {
+  int count = 0;   // 计数器
+  for (int i = i; i < _size; i++)
+    count += (_elem[i-1] > _elem[i]);    // 逆序对则计数+1, bool和int的隐式转换
+  return count;
+}
+
+template <typename T>
+Rank* Vector<T>::deduplicate_lower(Rank* rm_arr) {   // pr是保存删除对象索引数组
+  // 删除有序向量重复的元素, 返回被删除对象的数组索引
+  // Rank rm_arr[] = {};    // 删除对象索引数组
+  Rank a = 0; Rank* pa = &a;
+  Rank n = 0;            // 数组当前插入位置
+  Rank r1 = 0, r2 = 1;   // 创建两个索引值线性扫描
+  int tmp_size = _size;  // 备份初始的数组规模
+  while (r2 < tmp_size) {
+    if (_elem[r1] == _elem[r2]) {   // r2指向的元素和r1对应元素重复
+      rm_arr[n++] = r2;     // 索引数组中加入r2
+      // remove(r2);        // 删除r2对应的元素
+    } else {
+      r1 = r2;
+    }
+    r2++;    // 递增r2
+  }
+  return rm_arr;    // 返回删除索引数组
+  // return pa;
+}
+
 
 // ============================ split line ==========================
 template <typename T>
 void f_disordered(Vector<T> v) {
-  std::cout << "-- ------test Vector disordered()----- --\n";
+  std::cout << "-- ------test Vector disordered() ----- --\n";
   std::cout << "v.disordered()::count = " << v.disordered() << std::endl;
   v.print_vector();
+}
+
+
+template <typename T>
+void f_dedepulicate_lower(Vector<T> v) {
+  std::cout << "-- ------test Vecto::dedepulicate_lower() ----- --\n";
+  // int i = v.get_size();
+  Rank rm_arr[50] = {};
+  v.print_vector();
+  v.deduplicate_lower(rm_arr);
+  // std::cout << "v.disordered()::count = " << v.disordered() << std::endl;
+  // v.print_vector();
 }
 
 int main() {
@@ -492,8 +541,8 @@ int main() {
   // std::cout << "vi = " << vi << '\n'
   //           << "vr = " << vr << std::endl;
 
-  Rank lo = 0, hi = 5;
-  int iarr[] = {1, 3, 5, 7, 9};
+  Rank lo = 0, hi = 10;
+  int iarr[] = {1, 3, 3, 5, 5, 5, 7, 9, 9, 9};
   Vector<int> v(iarr, lo, hi);
 
   // // -- ----test operator[] ---------- --
@@ -576,7 +625,8 @@ int main() {
   // sum_static(v);
   // // v.print_vector();
 
-  f_disordered(v);
+  // f_disordered(v);
+  f_dedepulicate_lower(v);
 
 
   return 0;
