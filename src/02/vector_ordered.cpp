@@ -73,6 +73,9 @@ class Vector {   // 向量模板类
   void remove(int rm_arr[], int n);
   // int deduplicate_lower(int rm_arr[]);
 
+  // 有序向量唯一化(低效版)
+  int uniquify();
+
 
 
   // /* ... 构造函数 */
@@ -477,11 +480,13 @@ int Vector<T>::disordered() const {
 template <typename T>
 int Vector<T>::deduplicate_lower(int rm_arr[]) {
   // 删除有序向量重复的元素, rm_arr是保存删除对象索引数组, 返回被删除元素的数量
+  assert(!disordered());   // 当前为有序向量
   Rank n = 0;            // 数组当前插入位置
   Rank r1 = 0, r2 = 1;   // 创建两个索引值线性扫描
   while (r2 < _size) {
     if (_elem[r1] == _elem[r2]) {   // r2指向的元素和r1对应元素重复
       rm_arr[n++] = r2;     // 索引数组中加入r2
+      // remove(r2);
     } else { r1 = r2;}
     r2++;    // 递增r2
   }
@@ -492,7 +497,7 @@ int Vector<T>::deduplicate_lower(int rm_arr[]) {
 
 
 
-// 唯一化所依赖的通过索引数组一次性remove函数
+// 有序向量唯一化所依赖的通过索引数组一次性remove函数
 template <typename T>
 void Vector<T>::remove(int rm_arr[], int n) {
   // 删除索引除外的索引对应元素保留, 从左向右扫描
@@ -511,6 +516,16 @@ void Vector<T>::remove(int rm_arr[], int n) {
   delete [] old_elem;
 }
 
+// 有序向量唯一化
+template <typename T>
+int Vector<T>::uniquify() {
+  int old_size = _size; int i = 0;
+  while (i < _size) {
+    (_elem[i+1] == _elem[i]) ? remove(i+1) : i++;
+  }    // _size的改变由remove隐式完成
+  return old_size - _size;
+}
+
 
 // ============================ split line ==========================
 template <typename T>
@@ -525,11 +540,20 @@ template <typename T>
 void f_dedepulicate_lower(Vector<T> v) {
   std::cout << "-- ------test Vecto::dedepulicate_lower() ----- --\n";
   // int i = v.get_size();
-  Rank rm_arr[50] = {};
+  Rank rm_arr[50]= {};
   // Vector<int> rm_arr;
   v.print_vector();
-  v.deduplicate_lower(rm_arr);
-  // std::cout << "v.disordered()::count = " << v.disordered() << std::endl;
+  int rm_count = v.deduplicate_lower(rm_arr);
+  std::cout << "remove count = " << rm_count << std::endl;
+  v.print_vector();
+}
+
+template <typename T>
+int f_uniquify(Vector<T> v) {
+  std::cout << "-- ------test Vecto::uniquify() ----- --\n";
+  v.print_vector();
+  int rm_count = v.uniquify();
+  std::cout << "remove count = " << rm_count << std::endl;
   v.print_vector();
 }
 
@@ -562,8 +586,9 @@ int main() {
   // std::cout << "vi = " << vi << '\n'
   //           << "vr = " << vr << std::endl;
 
-  Rank lo = 0, hi = 10;
-  int iarr[] = {1, 3, 3, 5, 5, 5, 7, 9, 9, 9};
+  Rank lo = 0, hi = 8;
+  int iarr[] = {1, 3, 3, 3, 5, 7, 9, 9};
+  // int iarr[] = {1, 1, 1, 1, 1, 1, 1, 1};
   Vector<int> v(iarr, lo, hi);
 
   // // -- ----test operator[] ---------- --
@@ -647,7 +672,8 @@ int main() {
   // // v.print_vector();
 
   // f_disordered(v);
-  f_dedepulicate_lower(v);
+  // f_dedepulicate_lower(v);
+  f_uniquify(v);
 
 
   return 0;
