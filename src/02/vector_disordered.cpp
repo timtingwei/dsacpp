@@ -59,7 +59,8 @@ class Vector {   // 向量模板类
   int deduplicate();
 
   template <typename VST> void traverse(VST visit);
-
+  // template <typename VST> virtual void traverse(VST visit, T* e);
+  template <typename VST> T& traverse(VST visit, T* e);
   // 输出Vector对应容量位置上的所有元素
   void print_vector() const;
 
@@ -321,6 +322,7 @@ void Vector<T>::traverse(VST visit) {       // 函数对象, 全局修改
   for (int i = 0; i < _size; i++) visit(_elem[i]);
 }
 
+
 template <typename T>
 void increase(Vector<T> & V) {
   V.traverse(Increase<T>());
@@ -386,6 +388,8 @@ void decrease(Vector<T> & V) {
 
 // 终极问题: 为什么需要函数对象or 函数指针,  为什么不直接调用函数呢?
 
+
+// 用于traverse的加倍函数对象
 template <typename T>
 struct Double_value {
   virtual void operator()(T& e) {e *= 2;}   // 函数对象对元素翻倍
@@ -394,6 +398,27 @@ struct Double_value {
 template <typename T>
 void double_value(Vector<T>& V) {
   V.traverse(Double_value<T>());      // 函数对象作为遍历函数的参数
+}
+
+// 用于traverse的求和函数对象
+template <typename T>
+struct Sum {
+  virtual void operator()(const T& e, T* sumPtr) {(*sumPtr) += e;}
+};
+
+// 重载traverse(), 对Sum对象函数传入保存求和结果的指针
+template <typename T> template <typename VST>
+T& Vector<T>::traverse(VST visit, T* e) {
+  for (int i = 1; i < _size; i++) visit(_elem[i], e);   // 从第二个值开始累加
+  return *e;       // 返回求和结果
+}
+
+
+template <typename T>
+void sum_ptr(Vector<T>& V) {
+  T* sumPtr = &(V[0]);           // 别定义空指针, 该指针指向向量首位
+  T sum = V.traverse(Sum<T>(), sumPtr);     // 调用并赋值
+  std::cout << "sum = " << sum << std::endl;
 }
 
 int main() {
@@ -500,6 +525,9 @@ int main() {
   std::cout << "-- ------test traverse() double_value()------- --" << std::endl;
   double_value(v);
   v.print_vector();
+  // -- ------test traverse() Sum()--------------------- --
+  std::cout << "-- ------test traverse() Sum()------- --" << std::endl;
+  sum_ptr(v);
   return 0;
 }
 
