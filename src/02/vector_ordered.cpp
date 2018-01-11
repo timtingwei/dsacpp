@@ -56,20 +56,24 @@ class Vector {   // 向量模板类
   T& remove(Rank r);
   // 唯一化
   int deduplicate();
-  // ==================== 有序向量 ==============================
-  // 逆序程度
-  int disordered() const;
-  // 唯一化(低效)
-  Rank* deduplicate_lower(Rank* rm_arr);
-  // 为了定义 外部数组大小, 而定义的返回私有数据的函数
-  // const int get_size() const {return _size;}  // 外部大小数组不能用变量定义
-  
 
   template <typename VST> void traverse(VST visit);
   // template <typename VST> virtual void traverse(VST visit, T* e);
   template <typename VST> T& traverse(VST visit, T* e);
   // 输出Vector对应容量位置上的所有元素
   void print_vector() const;
+  // ==================== 有序向量 ==============================
+  // 逆序程度
+  int disordered() const;
+  // 唯一化(低效)
+  int deduplicate_lower(int rm_arr[]);
+  // 为了定义 外部数组大小, 而定义的返回私有数据的函数
+  int get_size() const {return _size;}  // 外部大小数组不能用变量定义
+  // 唯一化所依赖的通过索引数组一次性remove函数
+  void remove(int rm_arr[], int n);
+  // int deduplicate_lower(int rm_arr[]);
+
+
 
   // /* ... 构造函数 */
   Vector(int c = DEAFAULT_CAPACITY)
@@ -471,14 +475,15 @@ int Vector<T>::disordered() const {
 }
 
 template <typename T>
-Rank* Vector<T>::deduplicate_lower(Rank* rm_arr) {   // pr是保存删除对象索引数组
+int Vector<T>::deduplicate_lower(int rm_arr[]) {
+  // rm_arr是保存删除对象索引数组
   // 删除有序向量重复的元素, 返回被删除对象的数组索引
   // Rank rm_arr[] = {};    // 删除对象索引数组
-  Rank a = 0; Rank* pa = &a;
+  // Rank a = 0; Rank* pa = &a;
   Rank n = 0;            // 数组当前插入位置
   Rank r1 = 0, r2 = 1;   // 创建两个索引值线性扫描
-  int tmp_size = _size;  // 备份初始的数组规模
-  while (r2 < tmp_size) {
+  // int tmp_size = _size;  // 备份初始的数组规模
+  while (r2 < _size) {
     if (_elem[r1] == _elem[r2]) {   // r2指向的元素和r1对应元素重复
       rm_arr[n++] = r2;     // 索引数组中加入r2
       // remove(r2);        // 删除r2对应的元素
@@ -487,8 +492,34 @@ Rank* Vector<T>::deduplicate_lower(Rank* rm_arr) {   // pr是保存删除对象�
     }
     r2++;    // 递增r2
   }
-  return rm_arr;    // 返回删除索引数组
+  remove(rm_arr, n);   // 一次性删除索引对应的元素
+  std::cout << "_elem[0]" << _elem[0] << std::endl;
+  return n;            // 返回删除元素数量
   // return pa;
+}
+
+
+
+
+// 唯一化所依赖的通过索引数组一次性remove函数
+template <typename T>
+void Vector<T>::remove(int rm_arr[], int n) {
+  // 对每个元素计算好向左移动的距离, 从左向右扫描, 从右向左移动
+  std::cout << "testing remove(int*, int)...\n"
+            << "rm_arr[0] = " << rm_arr[0] << '\n'
+      << "rm_arr[1] = " << rm_arr[1] << '\n'
+      << "rm_arr[2] = " << rm_arr[2] << '\n'
+      << "rm_arr[3] = " << rm_arr[3] << '\n'
+      << "rm_arr[4] = " << rm_arr[4] << '\n'
+            << "n = " << n << std::endl;
+  // 先得到一份保留数组的索引
+  T* old_elem = _elem;    // 备份一份当前元素
+  // _size -= n;             // 刷新规模
+  _elem = new T[_capacity = _capacity];
+  for (int i = 0; i < n; i++) {
+    std::cout << "rm_arr[i]" << rm_arr[i] << std::endl;
+  }
+  delete [] old_elem;
 }
 
 
@@ -506,10 +537,11 @@ void f_dedepulicate_lower(Vector<T> v) {
   std::cout << "-- ------test Vecto::dedepulicate_lower() ----- --\n";
   // int i = v.get_size();
   Rank rm_arr[50] = {};
+  // Vector<int> rm_arr;
   v.print_vector();
   v.deduplicate_lower(rm_arr);
   // std::cout << "v.disordered()::count = " << v.disordered() << std::endl;
-  // v.print_vector();
+  v.print_vector();
 }
 
 int main() {
