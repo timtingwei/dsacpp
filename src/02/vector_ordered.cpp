@@ -75,6 +75,9 @@ class Vector {   // 向量模板类
 
   // 有序向量唯一化(低效版)
   int uniquify();
+  // 有序向量唯一化(高效版)
+  int uniquify_faster();
+
 
 
 
@@ -520,11 +523,30 @@ void Vector<T>::remove(int rm_arr[], int n) {
 template <typename T>
 int Vector<T>::uniquify() {
   int old_size = _size; int i = 0;
-  while (i < _size) {
+  while (i < _size - 1) {
     (_elem[i+1] == _elem[i]) ? remove(i+1) : i++;
   }    // _size的改变由remove隐式完成
   return old_size - _size;
 }
+
+// 有序向量唯一化高效版本
+/* my test code
+template <typename T>
+int Vector<T>::uniquify_faster() {
+  int i = 0, j = 1;   // i指向首位置
+  int old_size = _size; T* old_elem = _elem;  // 备份原有元素
+  _elem = new T[_capacity = _capacity];
+  _elem[0] = old_elem[0]; int n = 1;   // 存入首元素, 索引指向第二位
+  while (i < old_size - 1)
+    std::cout << "j = " << j << std::endl;
+    if (old_elem[i] != old_elem[j]) {
+      _elem[n++] = old_elem[j]; i = j++;
+    } else {j++; _size--;}
+  delete [] old_elem;
+  return old_size - n;
+}
+*/
+
 
 
 // ============================ split line ==========================
@@ -549,10 +571,19 @@ void f_dedepulicate_lower(Vector<T> v) {
 }
 
 template <typename T>
-int f_uniquify(Vector<T> v) {
+void f_uniquify(Vector<T> v) {
   std::cout << "-- ------test Vecto::uniquify() ----- --\n";
   v.print_vector();
   int rm_count = v.uniquify();
+  std::cout << "remove count = " << rm_count << std::endl;
+  v.print_vector();
+}
+
+template <typename T>
+void f_uniquify_faster(Vector<T> v) {
+  std::cout << "-- ------test Vecto::uniquify_faster() ----- --\n";
+  v.print_vector();
+  int rm_count = v.uniquify_faster();
   std::cout << "remove count = " << rm_count << std::endl;
   v.print_vector();
 }
@@ -673,7 +704,8 @@ int main() {
 
   // f_disordered(v);
   // f_dedepulicate_lower(v);
-  f_uniquify(v);
+  // f_uniquify(v);
+  f_uniquify_faster(v);
 
 
   return 0;
