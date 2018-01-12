@@ -13,6 +13,7 @@
 #include <iostream>
 #include <vector>
 #include <cassert>
+#include <ctime>              // random seed
 
 typedef int Rank;             // 秩
 #define DEAFAULT_CAPACITY 3   // 默认初始容量
@@ -79,8 +80,9 @@ class Vector {   // 向量模板类
   int uniquify_faster();
   // 查找ADT
   Rank search(T const& e, Rank lo, Rank hi) const;
-
-
+  // 两种search算法
+  Rank binSearch(T* elem, T const& e, Rank lo, Rank hi) const;
+  Rank fibSearch(T* elem, T const& e, Rank lo, Rank hi) const;
 
 
   // /* ... 构造函数 */
@@ -568,8 +570,24 @@ int Vector<T>::uniquify_faster() {
 // 查找ADT
 template <typename T>
 Rank Vector<T>::search(T const& e, Rank lo, Rank hi) const {
-  int i = rand() % 2;
-  std::cout << "r = " << i << std::endl;
+  // int i = rand() % 2;
+  // std::cout << "r = " << i << std::endl;
+  std::srand(std::time(0));
+  return (std::rand() % 2) ?
+      binSearch(_elem, e, lo, hi)     // 二分查找算法
+      : fibSearch(_elem, e, lo, hi);  // fibonacci查找算法
+}
+
+template <typename T>
+Rank Vector<T>::binSearch(T* elem, T const& e, Rank lo, Rank hi) const {
+  std::cout << "calling binSearch.... " << std::endl;
+  return lo;
+}
+
+template <typename T>
+Rank Vector<T>::fibSearch(T* elem, T const& e, Rank lo, Rank hi) const {
+  std::cout << "calling fibSearch... " << std::endl;
+  return lo;
 }
 
 
