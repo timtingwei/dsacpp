@@ -136,7 +136,7 @@ void Vector<T>::expand() {
 
 template <typename T>
 void Vector<T>::shrunk() {
-  if (_size > (_capacity/4)) return;   // 规模大于1/2不必缩容
+  if (_size > (_capacity/2)) return;   // 规模大于1/2不必缩容
   _capacity = std::max(_capacity, DEAFAULT_CAPACITY);
   // 储存一份旧元素, 创建新的数据空间
   T* old_elem = _elem; _elem = new T[_capacity >>= 1];
@@ -547,6 +547,18 @@ int Vector<T>::uniquify_faster() {
 }
 */
 
+template <typename T>
+int Vector<T>::uniquify_faster() {
+  int old_size = _size;
+  int i = 0, j = 0;   // 两个计数都指向首元素
+  while (++j < _size) {   // j扫描到末尾
+    if (_elem[i] != _elem[j]) {_elem[++i] = _elem[j];}  // j指向元素移到i后
+  }
+  _size = ++i; shrunk();      // 改变_size数值后, 缩容
+  return old_size - _size;
+}     // 依赖shrink();
+
+// 记录位置只用i
 
 
 // ============================ split line ==========================
