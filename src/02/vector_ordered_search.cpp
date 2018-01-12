@@ -581,7 +581,13 @@ Rank Vector<T>::search(T const& e, Rank lo, Rank hi) const {
 template <typename T>
 Rank Vector<T>::binSearch(T* elem, T const& e, Rank lo, Rank hi) const {
   std::cout << "calling binSearch.... " << std::endl;
-  return lo;
+  Rank mi = (lo + hi) >> 1;    // 中点秩
+  if (elem[mi] == e) return mi;     // 命中, 递归基
+  if (mi == hi-1) {return mi;}      // 失败
+  if (mi == lo) {return mi - 1;}    // 失败
+  if (e < elem[mi]) {     // 在mid左侧
+    return (binSearch(elem, e, lo, mi));
+  } else { return binSearch(elem, e, mi + 1, hi);}
 }
 
 template <typename T>
@@ -634,9 +640,11 @@ template <typename T>
 void f_search(Vector<T> v) {
   std::cout << "-- ------test f_search() ----- --\n";
   // v.print_vector();
-  T e = 5; Rank lo  = 0, hi  = 8;
-  v.search(e, lo, hi);
+  T e = 5; Rank lo  = 0, hi  = 3;
+  std::cout << "search result = " << v.search(e, lo, hi) << std::endl;
   // v.print_vector();
+  // Rank lo = 0, hi = 8;
+  // int iarr[] = {1, 3, 3, 3, 5, 7, 9, 9};
 }
 
 int main() {
