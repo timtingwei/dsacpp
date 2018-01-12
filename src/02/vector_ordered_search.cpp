@@ -573,11 +573,13 @@ Rank Vector<T>::search(T const& e, Rank lo, Rank hi) const {
   // int i = rand() % 2;
   // std::cout << "r = " << i << std::endl;
   std::srand(std::time(0));
-  return (std::rand() % 2) ?
+  //return (std::rand() % 2) ?
+  return (true) ?
       binSearch(_elem, e, lo, hi)     // 二分查找算法
       : fibSearch(_elem, e, lo, hi);  // fibonacci查找算法
 }
 
+/*
 template <typename T>
 Rank Vector<T>::binSearch(T* elem, T const& e, Rank lo, Rank hi) const {
   std::cout << "calling binSearch.... " << std::endl;
@@ -589,6 +591,17 @@ Rank Vector<T>::binSearch(T* elem, T const& e, Rank lo, Rank hi) const {
     } else { return binSearch(elem, e, mi + 1, hi);}
   }
   return -1;
+}
+*/
+template <typename T>
+Rank Vector<T>::binSearch(T* elem, T const& e, Rank lo, Rank hi) const {
+  while (lo < hi) {    // 区间存在
+    Rank mi =  (lo + hi) >> 1;        // 取中点
+    if      (e < elem[mi]) hi = mi;      // 深入前半段查找
+    else if (elem[mi] < e) lo = mi + 1;  // 深入后半段查找
+    else                   return mi;    // 在mi命中
+  }
+  return -1;   // 查找失败
 }
 
 template <typename T>
