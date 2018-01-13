@@ -25,6 +25,8 @@ class Vector {   // 向量模板类
 
  protected:
   /* ... 内部函数*/
+  // 拷贝函数
+  void copyFrom(T* const A, Rank lo, Rank hi);   // 复制数组区间A[lo, hi)
   // 扩容空间
   void expand();
   // 缩容空间
@@ -32,29 +34,34 @@ class Vector {   // 向量模板类
 
  public:
   /* ... 构造函数 */
-  Vector(int c = DEAFAULT_CAPACITY)
-  {_elem = new T[_capacity = c]; _size = 0;}     // 默认
-  Vector(T* const A, Rank lo, Rank hi)          // 数组区间复制
+  Vector(int c = DEAFAULT_CAPACITY, int s = 0, T v = 0)
+  {_elem = new T[_capacity = c];
+    for (_size = 0; _size < s; _elem[_size++] = v) {}}     // 默认
+  Vector(T* const A, Rank lo, Rank hi)           // 数组区间复制
   {copyFrom(A, lo, hi);}
+  Vector(T* const A, Rank n)                     // 数组整体复制
+  {copyFrom(A, 0, n);}
   Vector(Vector<T> const& V, Rank lo, Rank hi)   // 向量区间复制
   {copyFrom(V, lo, hi);}
   Vector(Vector<T> const& V)                     // 向量整体复制
   {copyFrom(V._elem, 0, V._size);}
-  // 拷贝函数
-  void copyFrom(T* const A, Rank lo, Rank hi);
 
   /* ... 析构函数*/
   ~Vector() {delete [] _elem;}                   // 释放内部空间
 
   /* ... 只读函数*/
-  // 寻秩访问, 重载[]运算符
-  T& operator[](Rank r) const;
-  // 查找e在区间[lo,hi)内
-  Rank find(Rank lo, Rank hi, T const &e) const;
-  // 输出Vector对应容量位置上的所有元素
-  void print_vector() const;
+  // 规模
+  Rank size() const {return _size;}
+  // 判空
+  bool empty() const {return !_size;}
   // 逆序程度
   int disordered() const;
+  // 无序向量, 查找e在区间[lo,hi)内
+  Rank find(Rank lo, Rank hi, T const &e) const;
+  // 无序向量整体查找
+  Rank find(T const &e) const {return find(e, 0, (Rank)_size);}
+  // 输出Vector对应容量位置上的所有元素
+  void print_vector() const;
   // 查找ADT
   Rank search(T const& e, Rank lo, Rank hi) const;
   // 两种search算法
@@ -62,14 +69,8 @@ class Vector {   // 向量模板类
   Rank fibSearch(T* elem, T const& e, Rank lo, Rank hi) const;
 
   /* ... 可写函数*/
-  // 重载前置++操作符
-  T& operator++();
-  // 重载后置++操作符
-  T* operator++(int);
-  // 重载前置--操作符
-  T& operator--();
-  // 重载后置--操作符
-  T* operator--(int i);
+  // 寻秩访问, 重载[]运算符
+  T& operator[](Rank r) const;
   // 按秩插入
   void insert(const Rank r, T const &e);
   // 删除区间元素
@@ -304,7 +305,7 @@ int Vector<T>::deduplicate() {
   return  old_size - _size;      // 返回规模的变化量
 }
 
-
+/*
 // 重载前置++操作符
 template <typename T>
 T& Vector<T>::operator++() {
@@ -323,7 +324,7 @@ T* Vector<T>::operator++(int i) {
   ++*this;           // 调用前置递增++, 递增所有元素
   return e;          // 返回递增前的元素
 }
-
+*/
 
 // 单个T类型元素加1的类
 template <typename T>
@@ -342,19 +343,20 @@ void increase(Vector<T> & V) {
   V.traverse(Increase<T>());
 }
 
-
+/*
 template <typename T>
 T& Vector<T>::operator--() {          // 重载前置--操作符
   for (int i = 0; i < _size; i++)
     _elem[i]--;                    // 对每个元素-1
   return *_elem;                    // 返回当前 *this or *_elem
 }
+*/
 
 // 为什么返回*_elem 而不是 *this??
 // 递减运算符重载函数的返回类型, 的返回类型是int&
   //, *this的类型为Vector<int>, 而*_elem 的类型是int
 
-
+/*
 // 运用函数对象机制遍历减一Vector中的元素
 template <typename T>
 T* Vector<T>::operator--(int i) {          // 重载后置--操作符
@@ -362,6 +364,7 @@ T* Vector<T>::operator--(int i) {          // 重载后置--操作符
   --*this;                         // 调用前置递减
   return e;
 }
+*/
 
 
 // 遍历运用函数对象机制，对各个元素减1
