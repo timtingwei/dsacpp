@@ -22,70 +22,16 @@ template <typename T>
 class Vector {   // 向量模板类
  private:
   Rank _size; int _capacity; T* _elem;   // 规模, 容量, 数据区
+
  protected:
   /* ... 内部函数*/
- public:
-  // 拷贝函数
-  void copyFrom(T* const A, Rank lo, Rank hi);
   // 扩容空间
   void expand();
   // 缩容空间
   void shrunk();
-  // 寻秩访问, 重载[]运算符
-  T& operator[](Rank r) const;
-  // 重载前置++操作符
-  T& operator++();
-  // 重载后置++操作符
-  T* operator++(int);
-  // 测试++操作符
-  // t_f++;
-  // 重载前置--操作符
-  T& operator--();
-  // 重载后置--操作符
-  T* operator--(int i);
-  // 测试寻秩访问
-  T t;
-  // 按秩插入
-  void insert(const Rank r, T const &e);
-  // 删除区间元素
-  int remove(Rank lo, Rank hi);
-  // 查找e在区间[lo,hi)内
-  Rank find(Rank lo, Rank hi, T const &e) const;
-  // 测试find()
-  T t_f = 8;
-  // 删除单元素的操作
-  T& remove(Rank r);
-  // 唯一化
-  int deduplicate();
 
-  template <typename VST> void traverse(VST visit);
-  // template <typename VST> virtual void traverse(VST visit, T* e);
-  template <typename VST> T& traverse(VST visit, T* e);
-  // 输出Vector对应容量位置上的所有元素
-  void print_vector() const;
-  // ==================== 有序向量 ==============================
-  // 逆序程度
-  int disordered() const;
-  // 唯一化(低效)
-  int deduplicate_lower(int rm_arr[]);
-  // 为了定义 外部数组大小, 而定义的返回私有数据的函数
-  int get_size() const {return _size;}  // 外部大小数组不能用变量定义
-  // 唯一化所依赖的通过索引数组一次性remove函数
-  void remove(int rm_arr[], int n);
-  // int deduplicate_lower(int rm_arr[]);
-
-  // 有序向量唯一化(低效版)
-  int uniquify();
-  // 有序向量唯一化(高效版)
-  int uniquify_faster();
-  // 查找ADT
-  Rank search(T const& e, Rank lo, Rank hi) const;
-  // 两种search算法
-  Rank binSearch(T* elem, T const& e, Rank lo, Rank hi) const;
-  Rank fibSearch(T* elem, T const& e, Rank lo, Rank hi) const;
-
-
-  // /* ... 构造函数 */
+ public:
+  /* ... 构造函数 */
   Vector(int c = DEAFAULT_CAPACITY)
   {_elem = new T[_capacity = c]; _size = 0;}     // 默认
   Vector(T* const A, Rank lo, Rank hi)          // 数组区间复制
@@ -94,12 +40,59 @@ class Vector {   // 向量模板类
   {copyFrom(V, lo, hi);}
   Vector(Vector<T> const& V)                     // 向量整体复制
   {copyFrom(V._elem, 0, V._size);}
+  // 拷贝函数
+  void copyFrom(T* const A, Rank lo, Rank hi);
 
-  // /* ... 析构函数
+  /* ... 析构函数*/
   ~Vector() {delete [] _elem;}                   // 释放内部空间
+
   /* ... 只读函数*/
+  // 寻秩访问, 重载[]运算符
+  T& operator[](Rank r) const;
+  // 查找e在区间[lo,hi)内
+  Rank find(Rank lo, Rank hi, T const &e) const;
+  // 输出Vector对应容量位置上的所有元素
+  void print_vector() const;
+  // 逆序程度
+  int disordered() const;
+  // 查找ADT
+  Rank search(T const& e, Rank lo, Rank hi) const;
+  // 两种search算法
+  Rank binSearch(T* elem, T const& e, Rank lo, Rank hi) const;
+  Rank fibSearch(T* elem, T const& e, Rank lo, Rank hi) const;
+
   /* ... 可写函数*/
+  // 重载前置++操作符
+  T& operator++();
+  // 重载后置++操作符
+  T* operator++(int);
+  // 重载前置--操作符
+  T& operator--();
+  // 重载后置--操作符
+  T* operator--(int i);
+  // 按秩插入
+  void insert(const Rank r, T const &e);
+  // 删除区间元素
+  int remove(Rank lo, Rank hi);
+  // 删除单元素的操作
+  T& remove(Rank r);
+  // 唯一化
+  int deduplicate();
+  // 唯一化(低效)
+  int deduplicate_lower(int rm_arr[]);
+  // 唯一化所依赖的通过索引数组一次性remove函数
+  void remove(int rm_arr[], int n);
+  // 有序向量唯一化(低效版)
+  int uniquify();
+  // 有序向量唯一化(高效版)
+  int uniquify_faster();
+
   /* ... 遍历函数*/
+  template <typename VST> void traverse(VST visit);
+  // template <typename VST> virtual void traverse(VST visit, T* e);
+  template <typename VST> T& traverse(VST visit, T* e);
+
+  // ==================== 有序向量 ==============================
 };
 
 template <typename T>
@@ -164,7 +157,7 @@ template <typename T>
 T& Vector<T>::operator[](Rank r) const {   // 不改变数据成员, 定义成常量成员函数
   // 在vector内部, 定义了秩的类型, 统一用Rank
   assert(r < _size);   // 对下标秩进行溢出检测
-  return _elem[r];
+  return *(_elem + r);
 }
 
 // 插入
@@ -579,7 +572,8 @@ Rank Vector<T>::search(T const& e, Rank lo, Rank hi) const {
       : fibSearch(_elem, e, lo, hi);  // fibonacci查找算法
 }
 
-/*
+// 二分查找: 版本A
+/* my test code
 template <typename T>
 Rank Vector<T>::binSearch(T* elem, T const& e, Rank lo, Rank hi) const {
   std::cout << "calling binSearch.... " << std::endl;
@@ -597,6 +591,8 @@ template <typename T>
 Rank Vector<T>::binSearch(T* elem, T const& e, Rank lo, Rank hi) const {
   while (lo < hi) {    // 区间存在
     Rank mi =  (lo + hi) >> 1;        // 取中点
+    std::cout << "into binSearch while loop..." << '\n'
+              << "mi = " << mi << std::endl;
     if      (e < elem[mi]) hi = mi;      // 深入前半段查找
     else if (elem[mi] < e) lo = mi + 1;  // 深入后半段查找
     else                   return mi;    // 在mi命中
@@ -623,7 +619,6 @@ void f_disordered(Vector<T> v) {
 template <typename T>
 void f_dedepulicate_lower(Vector<T> v) {
   std::cout << "-- ------test Vecto::dedepulicate_lower() ----- --\n";
-  // int i = v.get_size();
   Rank rm_arr[50]= {};
   // Vector<int> rm_arr;
   v.print_vector();
@@ -654,11 +649,12 @@ template <typename T>
 void f_search(Vector<T> v) {
   std::cout << "-- ------test f_search() ----- --\n";
   // v.print_vector();
-  T e = 5; Rank lo  = 0, hi  = 3;
+  T e = 8; Rank lo  = 0, hi  = 7;
   std::cout << "search result = " << v.search(e, lo, hi) << std::endl;
   // v.print_vector();
-  // Rank lo = 0, hi = 8;
-  // int iarr[] = {1, 3, 3, 3, 5, 7, 9, 9};
+  // Rank lo = 0, hi = 7;
+  // int iarr[] = {2, 4, 5, 7, 8, 9, 12};
+
 }
 
 int main() {
@@ -690,9 +686,11 @@ int main() {
   // std::cout << "vi = " << vi << '\n'
   //           << "vr = " << vr << std::endl;
 
-  Rank lo = 0, hi = 8;
-  int iarr[] = {1, 3, 3, 3, 5, 7, 9, 9};
+  // Rank lo = 0, hi = 8;
+  // int iarr[] = {1, 3, 3, 3, 5, 7, 9, 9};
   // int iarr[] = {1, 1, 1, 1, 1, 1, 1, 1};
+  Rank lo = 0, hi = 7;
+  int iarr[] = {2, 4, 5, 7, 8, 9, 12};
   Vector<int> v(iarr, lo, hi);
 
   // // -- ----test operator[] ---------- --
