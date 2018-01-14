@@ -69,7 +69,7 @@ class Vector {   // 向量模板类
   Rank fibSearch(T* elem, T const& e, Rank lo, Rank hi) const;
   // 生成fibonacci数
   // int fib(const int& n) const;
-  int fib(const int& n, int mem_lst[]) const;
+  int fib(const int& n, int fib_lst[]) const;
   // 检查fib已经存在
   bool is_exist(const int e) const;
 
@@ -99,6 +99,24 @@ class Vector {   // 向量模板类
   template <typename VST> T& traverse(VST visit, T* e);
 
   // ==================== 有序向量 ==============================
+};
+
+class Fib {
+  int* _lib_lst; int _size;
+ public:
+  explicit Fib(const int n) : _size(n) {}
+  template <typename T>
+int Vector<T>::fib(const int& n, int fib_lst[]) const {
+  if (fib_lst[n] != 0) {
+    return fib_lst[n];
+  } else {
+    if (n < 2) {fib_lst[n] = n;} else {
+      fib_lst[n] = fib(n-1, fib_lst)  + fib(n-2, fib_lst);
+      return fib_lst[n];
+    }
+  }
+}
+
 };
 
 template <typename T>
@@ -613,7 +631,7 @@ template <typename T>
 Rank Vector<T>::fibSearch(T* elem, T const& e, Rank lo, Rank hi) const {
   std::cout << "calling fibSearch... " << std::endl;
   // while (lo < hi) {
-    // int mi = lo
+  //   int mi = 
   // }
   return lo;
 }
@@ -629,13 +647,13 @@ int Vector<T>::fib(const int& n) const {
 */
 
 template <typename T>
-int Vector<T>::fib(const int& n, int mem_lst[]) const {
-  if (mem_lst[n] != 0) {
-    return mem_lst[n];
+int Vector<T>::fib(const int& n, int fib_lst[]) const {
+  if (fib_lst[n] != 0) {
+    return fib_lst[n];
   } else {
-    if (n < 2) {mem_lst[n] = n;} else {
-      mem_lst[n] = fib(n-1, mem_lst)  + fib(n-2, mem_lst);
-      return mem_lst[n];
+    if (n < 2) {fib_lst[n] = n;} else {
+      fib_lst[n] = fib(n-1, fib_lst)  + fib(n-2, fib_lst);
+      return fib_lst[n];
     }
   }
 }
@@ -685,12 +703,13 @@ void f_search(Vector<T> v) {
   // v.print_vector();
   T e = 8; Rank lo  = 0, hi  = 7;
   const int n = 6;
-  int mem_lst[n] = {};
-  for (int i = 0; i <= n; mem_lst[i++] = 0) {}
-  // for (int i = 0; i < n; std::cout << mem_lst[i++] << std::endl) {}
+  int fib_lst[n] = {};
+  for (int i = 0; i <= n; fib_lst[i++] = 0) {}
 
   // std::cout << v.fib(n) << std::endl;
-  std::cout << "fib("<< n << ") - 1 = " << v.fib(n, mem_lst)-1 << std::endl;
+  std::cout << "fib("<< n << ") - 1 = " << v.fib(n, fib_lst)-1 << std::endl;
+  for (int i = 0; i <= n; std::cout << fib_lst[i++] << std::endl) {}
+
   std::cout << "search result = " << v.search(e, lo, hi) << std::endl;
   // v.print_vector();
   // Rank lo = 0, hi = 7;
