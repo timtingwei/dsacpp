@@ -68,7 +68,8 @@ class Vector {   // 向量模板类
   Rank binSearch(T* elem, T const& e, Rank lo, Rank hi) const;
   Rank fibSearch(T* elem, T const& e, Rank lo, Rank hi) const;
   // 生成fibonacci数
-  int fib(const int& n) const;
+  // int fib(const int& n) const;
+  int fib(const int& n, int mem_lst[]) const;
   // 检查fib已经存在
   bool is_exist(const int e) const;
 
@@ -620,9 +621,23 @@ Rank Vector<T>::fibSearch(T* elem, T const& e, Rank lo, Rank hi) const {
 template <typename T>
 bool Vector<T>::is_exist(const int e) const {return e != 0;}
 
+/*
 template <typename T>
 int Vector<T>::fib(const int& n) const {
   return (n < 2) ? n : fib(n-1) + fib(n-2);
+}
+*/
+
+template <typename T>
+int Vector<T>::fib(const int& n, int mem_lst[]) const {
+  if (mem_lst[n] != 0) {
+    return mem_lst[n];
+  } else {
+    if (n < 2) {mem_lst[n] = n;} else {
+      mem_lst[n] = fib(n-1, mem_lst)  + fib(n-2, mem_lst);
+      return mem_lst[n];
+    }
+  }
 }
 
 
@@ -671,8 +686,11 @@ void f_search(Vector<T> v) {
   T e = 8; Rank lo  = 0, hi  = 7;
   const int n = 6;
   int mem_lst[n] = {};
-  
-  std::cout << v.fib(n) << std::endl;
+  for (int i = 0; i <= n; mem_lst[i++] = 0) {}
+  // for (int i = 0; i < n; std::cout << mem_lst[i++] << std::endl) {}
+
+  // std::cout << v.fib(n) << std::endl;
+  std::cout << v.fib(n, mem_lst) << std::endl;
   std::cout << "search result = " << v.search(e, lo, hi) << std::endl;
   // v.print_vector();
   // Rank lo = 0, hi = 7;
