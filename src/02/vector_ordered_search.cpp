@@ -102,20 +102,23 @@ class Vector {   // 向量模板类
 };
 
 class Fib {
-  int* _lib_lst; int _size;
+  int* _fib_lst; int _size;
  public:
-  explicit Fib(const int n) : _size(n) {}
-  if (fib_lst[n] != 0) {
-    return fib_lst[n];
-  } else {
-    if (n < 2) {fib_lst[n] = n;} else {
-      fib_lst[n] = fib(n-1, fib_lst)  + fib(n-2, fib_lst);
-      return fib_lst[n];
+  explicit Fib(const int n) : _size(n) {fib(n, _fib_lst);}
+  int fib(const int n, int* _fib_lst) {
+    if (_fib_lst[n] != 0) {
+      return _fib_lst[n];
+    } else {
+      if (n < 2) {_fib_lst[n] = n;} else {
+        _fib_lst[n] = fib(n-1, _fib_lst)  + fib(n-2, _fib_lst);
+        return _fib_lst[n];
+      }
     }
   }
-}
 
+  int get(const int& n) const {return _fib_lst[n];}
 };
+
 
 template <typename T>
 void Vector<T>::copyFrom(T* const A, Rank lo, Rank hi) {
@@ -709,6 +712,8 @@ void f_search(Vector<T> v) {
   for (int i = 0; i <= n; std::cout << fib_lst[i++] << std::endl) {}
 
   std::cout << "search result = " << v.search(e, lo, hi) << std::endl;
+  Fib fib(n);
+  std::cout << "fib.get() = " << fib.get(2) << std::endl;
   // v.print_vector();
   // Rank lo = 0, hi = 7;
   // int iarr[] = {2, 4, 5, 7, 8, 9, 12};
