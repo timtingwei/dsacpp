@@ -105,8 +105,6 @@ class Fib {
   int* _lib_lst; int _size;
  public:
   explicit Fib(const int n) : _size(n) {}
-  template <typename T>
-int Vector<T>::fib(const int& n, int fib_lst[]) const {
   if (fib_lst[n] != 0) {
     return fib_lst[n];
   } else {
