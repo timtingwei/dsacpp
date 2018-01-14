@@ -570,7 +570,7 @@ Rank Vector<T>::search(T const& e, Rank lo, Rank hi) const {
   // std::cout << "r = " << i << std::endl;
   std::srand(std::time(0));
   //return (std::rand() % 2) ?
-  return (true) ?
+  return (false) ?
       binSearch(_elem, e, lo, hi)     // 二分查找算法
       : fibSearch(_elem, e, lo, hi);  // fibonacci查找算法
 }
