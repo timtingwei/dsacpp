@@ -690,7 +690,7 @@ void f_search(Vector<T> v) {
   // for (int i = 0; i < n; std::cout << mem_lst[i++] << std::endl) {}
 
   // std::cout << v.fib(n) << std::endl;
-  std::cout << v.fib(n, mem_lst) << std::endl;
+  std::cout << "fib("<< n << ") - 1 = " << v.fib(n, mem_lst)-1 << std::endl;
   std::cout << "search result = " << v.search(e, lo, hi) << std::endl;
   // v.print_vector();
   // Rank lo = 0, hi = 7;
