@@ -101,10 +101,12 @@ class Vector {   // 向量模板类
   // ==================== 有序向量 ==============================
 };
 
+
 class Fib {
   int* _fib_lst; int _size;
  public:
-  explicit Fib(const int n) : _size(n) {fib(n, _fib_lst);}
+  explicit Fib(const int& n) : _size(n) {fib(n, _fib_lst);}
+
   int fib(const int n, int* _fib_lst) {
     if (_fib_lst[n] != 0) {
       return _fib_lst[n];
@@ -117,8 +119,17 @@ class Fib {
   }
 
   int get(const int& n) const {return _fib_lst[n];}
+
+  void print() const {
+    for (int i = 0; i < _size; std::cout << i
+             <<": _fib_lst[i]" << _fib_lst[i] << std::endl) {}
+  }
 };
 
+void test_fib() {
+  const int n = 5;
+  Fib fib(n);
+}
 
 template <typename T>
 void Vector<T>::copyFrom(T* const A, Rank lo, Rank hi) {
@@ -842,7 +853,8 @@ int main() {
   // f_uniquify(v);
   // f_uniquify_faster(v);
 
-  f_search(v);
+  // f_search(v);
+  test_fib;
 
 
   return 0;
