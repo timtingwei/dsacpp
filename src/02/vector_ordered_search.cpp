@@ -141,7 +141,7 @@ template <typename T> void swap(T* e1, T* e2) {
 template <typename T> void permute(Vector<T>& V) {
   std::srand(std::time(0));
   for (int i = V.size(); i > 0; i--)
-    swap(V[i-1], V[std::rand() % i]);
+    swap(&(V[i-1]), &(V[std::rand() % i]));
 }
 
 template <typename T>
@@ -876,8 +876,6 @@ int main() {
   // f_search(v);
   // test_fib();
   f_permute(v);
-
-
   return 0;
 }
 
