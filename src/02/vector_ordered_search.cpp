@@ -122,13 +122,20 @@ class Fib {
 
   void print() const {
     for (int i = 0; i < _size; std::cout << i
-             <<": _fib_lst[i]" << _fib_lst[i] << std::endl) {}
+             <<": _fib_lst[i]" << _fib_lst[i++] << std::endl) {}
+    std::cout << "_size = " << _size << std::endl;
   }
 };
 
 void test_fib() {
   const int n = 5;
   Fib fib(n);
+  fib.print();
+}
+
+template <typename T> void swap(T* e1, T* e2) {
+  T tmp = *e1;
+  *e1 = *e2; *e2 =  tmp;
 }
 
 template <typename T>
@@ -854,7 +861,7 @@ int main() {
   // f_uniquify_faster(v);
 
   // f_search(v);
-  test_fib;
+  test_fib();
 
 
   return 0;
