@@ -875,6 +875,7 @@ int main() {
 
   // f_search(v);
   // test_fib();
+  v.print_vector();
   f_permute(v);
   return 0;
 }
