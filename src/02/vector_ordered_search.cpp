@@ -744,6 +744,13 @@ void f_search(Vector<T> v) {
 
 }
 
+template <typename T>
+void f_permute(Vector<T> v) {
+  std::cout << "-- --------test permute() ---------\n";
+  permute(v);
+  v.print_vector();
+}
+
 int main() {
   // ...
   /*
@@ -867,7 +874,8 @@ int main() {
   // f_uniquify_faster(v);
 
   // f_search(v);
-  test_fib();
+  // test_fib();
+  f_permute(v);
 
 
   return 0;
