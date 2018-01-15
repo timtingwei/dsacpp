@@ -138,6 +138,12 @@ template <typename T> void swap(T* e1, T* e2) {
   *e1 = *e2; *e2 =  tmp;
 }
 
+template <typename T> void permute(Vector<T>& V) {
+  std::srand(std::time(0));
+  for (int i = V.size(); i > 0; i--)
+    swap(V[i-1], V[std::rand() % i]);
+}
+
 template <typename T>
 void Vector<T>::copyFrom(T* const A, Rank lo, Rank hi) {
   _elem = new T[_capacity = 2*(hi- lo)];      // 分配空间
