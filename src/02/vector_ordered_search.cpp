@@ -101,7 +101,7 @@ class Vector {   // 向量模板类
   // ==================== 有序向量 ==============================
 };
 
-
+// 定义fibonacci相关的类
 class Fib {
   int* _fib_lst; int _size;
 
@@ -115,7 +115,9 @@ class Fib {
   // 将数列置空
   void emptyFib(const int n) {
     // 初始化0
-    for (int i = 0; i < n; _fib_lst[i++] = 0) {}
+    for (int i = 0; i < n; i++) {
+      _fib_lst[i] = 0;
+    }
   }
 
   // 生成fib数列
@@ -154,14 +156,14 @@ class Fib {
 };
 
 void test_fib() {
-  const int n = 10;
+  const int n = 30;
   Fib fib(n);
   fib.printFib();
-  int v = fib.get(4);
-  std::cout << "fib.get(4) = " << v << std::endl;
+  // int v = fib.get(4);
+  // std::cout << "fib.get(4) = " << v << std::endl;
   // test index
-  int index_6 = fib.index(6);
-  std::cout << "fib.index(6) = " << index_6 << std::endl;
+  // int index_6 = fib.index(6);
+  // std::cout << "fib.index(6) = " << index_6 << std::endl;
 }
 
 template <typename T> void swap(T* e1, T* e2) {
@@ -686,6 +688,8 @@ Rank Vector<T>::binSearch(T* elem, T const& e, Rank lo, Rank hi) const {
 template <typename T>
 Rank Vector<T>::fibSearch(T* elem, T const& e, Rank lo, Rank hi) const {
   std::cout << "calling fibSearch... " << std::endl;
+  
+  // Fib fib
   // while (lo < hi) {
   // }
   return lo;
@@ -700,7 +704,7 @@ int Vector<T>::fib(const int& n) const {
   return (n < 2) ? n : fib(n-1) + fib(n-2);
 }
 */
-
+/*
 template <typename T>
 int Vector<T>::fib(const int& n, int fib_lst[]) const {
   if (fib_lst[n] != 0) {
@@ -712,7 +716,7 @@ int Vector<T>::fib(const int& n, int fib_lst[]) const {
     }
   }
 }
-
+*/
 
 // ============================ split line ==========================
 template <typename T>
@@ -754,24 +758,16 @@ void f_uniquify_faster(Vector<T> v) {
 
 template <typename T>
 void f_search(Vector<T> v) {
-  std::cout << "-- ------test f_search() ----- --\n";
+  std::cout << "-- ------test f_search() ----- --" << std::endl;
   // v.print_vector();
-  T e = 8; Rank lo  = 0, hi  = 7;
-  const int n = 6;
-  int fib_lst[n] = {};
-  for (int i = 0; i <= n; fib_lst[i++] = 0) {}
-
-  // std::cout << v.fib(n) << std::endl;
-  std::cout << "fib("<< n << ") - 1 = " << v.fib(n, fib_lst)-1 << std::endl;
-  for (int i = 0; i <= n; std::cout << fib_lst[i++] << std::endl) {}
-
-  std::cout << "search result = " << v.search(e, lo, hi) << std::endl;
-  Fib fib(n);
-  std::cout << "fib.get() = " << fib.get(2) << std::endl;
+  int e = 8;
+  int lo  = 0, hi  = 7;
+  // const int n = 6;
+  Fib fib(hi);
+  fib.printFib();
   // v.print_vector();
   // Rank lo = 0, hi = 7;
   // int iarr[] = {2, 4, 5, 7, 8, 9, 12};
-
 }
 
 template <typename T>
@@ -883,8 +879,8 @@ int main() {
   // f_uniquify(v);
   // f_uniquify_faster(v);
 
-  // f_search(v);
-  test_fib();
+  f_search(v);
+  // test_fib();
   // v.print_vector();
   // f_permute(v);
   return 0;
