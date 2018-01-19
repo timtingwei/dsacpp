@@ -135,7 +135,11 @@ class Fib {
 
   int index(const int v) const {
     // 获得某一值在fib数列对应的索引
-    std::cout << "index() :: _size = " << _size << std::endl;
+    for (int i = 0; i < _size; i++) {
+      if (v == _fib_lst[i]) return i;
+      if (v < _fib_lst[i]) return -1;    // 比当扫描值大还没找到, 返回失败
+    }
+    return -1;    // 在扫描过程中没找到, 返回失败
   }
 
   // 打印数列
@@ -155,6 +159,9 @@ void test_fib() {
   fib.printFib();
   int v = fib.get(4);
   std::cout << "fib.get(4) = " << v << std::endl;
+  // test index
+  int index_6 = fib.index(6);
+  std::cout << "fib.index(6) = " << index_6 << std::endl;
 }
 
 template <typename T> void swap(T* e1, T* e2) {
