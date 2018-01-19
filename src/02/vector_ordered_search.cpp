@@ -104,9 +104,21 @@ class Vector {   // 向量模板类
 
 class Fib {
   int* _fib_lst; int _size;
- public:
-  explicit Fib(const int& n) : _size(n) {fib(n, _fib_lst);}
 
+ public:
+  // 构造函数
+  explicit Fib(const int n) : _size(n) {
+    emptyFib(n);
+    fib(n-1, _fib_lst);
+  }
+
+  // 将数列置空
+  void emptyFib(const int n) {
+    // 初始化0
+    for (int i = 0; i < n; _fib_lst[i++] = 0) {}
+  }
+
+  // 生成fib数列
   int fib(const int n, int* _fib_lst) {
     if (_fib_lst[n] != 0) {
       return _fib_lst[n];
@@ -118,19 +130,31 @@ class Fib {
     }
   }
 
-  int get(const int& n) const {return _fib_lst[n];}
+  // 获得数列中某一索引的值
+  int& get(const int& n) const {return _fib_lst[n];}
 
-  void print() const {
-    for (int i = 0; i < _size; std::cout << i
-             <<": _fib_lst[i]" << _fib_lst[i++] << std::endl) {}
+  int index(const int v) const {
+    // 获得某一值在fib数列对应的索引
+    std::cout << "index() :: _size = " << _size << std::endl;
+  }
+
+  // 打印数列
+  void printFib() const {
+    std::cout << "---- print fib series -----\n";
+    for (int i = 0; i < _size; i++) {
+      std::cout << i <<": _fib_lst[i]"
+                << _fib_lst[i] << std::endl;
+    }
     std::cout << "_size = " << _size << std::endl;
   }
 };
 
 void test_fib() {
-  const int n = 5;
+  const int n = 10;
   Fib fib(n);
-  fib.print();
+  fib.printFib();
+  int v = fib.get(4);
+  std::cout << "fib.get(4) = " << v << std::endl;
 }
 
 template <typename T> void swap(T* e1, T* e2) {
@@ -656,7 +680,6 @@ template <typename T>
 Rank Vector<T>::fibSearch(T* elem, T const& e, Rank lo, Rank hi) const {
   std::cout << "calling fibSearch... " << std::endl;
   // while (lo < hi) {
-  //   int mi = 
   // }
   return lo;
 }
@@ -751,28 +774,8 @@ void f_permute(Vector<T> v) {
   v.print_vector();
 }
 
+// ===================== main ====================================
 int main() {
-  // ...
-  /*
-  std::vector<int> vec;
-  // vec.insert(0, 9, 2);
-  // vec.put(1, 2);
-  // vec.get(2);
-  // vec.remove(3);
-  vec.size();
-  // vec.disordered();
-  // vec.find(9);
-  // vec.sort();
-  // vec.search();
-  // vec.uniquify();
-  // print vector;
-  for (int i = 0; i < vec.size(); i++) {
-    std::cout << vec[i] << std::endl;
-  }
-  // ---test array---
-  // int i;
-  // int arr[i = 5] = {};
-  */
   // -- ------test Vector class----- --
   // std::cout << "-- ------test Vector class----- --" << std::endl;
   // int vi = 5;
@@ -874,9 +877,9 @@ int main() {
   // f_uniquify_faster(v);
 
   // f_search(v);
-  // test_fib();
-  v.print_vector();
-  f_permute(v);
+  test_fib();
+  // v.print_vector();
+  // f_permute(v);
   return 0;
 }
 
