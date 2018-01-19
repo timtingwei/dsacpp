@@ -67,6 +67,7 @@ class Vector {   // 向量模板类
   // 两种search算法
   Rank binSearch(T* elem, T const& e, Rank lo, Rank hi) const;
   Rank fibSearch(T* elem, T const& e, Rank lo, Rank hi) const;
+
   // 生成fibonacci数
   // int fib(const int& n) const;
   int fib(const int& n, int fib_lst[]) const;
@@ -671,6 +672,8 @@ Rank Vector<T>::binSearch(T* elem, T const& e, Rank lo, Rank hi) const {
   return -1;
 }
 */
+
+
 template <typename T>
 Rank Vector<T>::binSearch(T* elem, T const& e, Rank lo, Rank hi) const {
   while (lo < hi) {    // 区间存在
@@ -684,16 +687,21 @@ Rank Vector<T>::binSearch(T* elem, T const& e, Rank lo, Rank hi) const {
   return -1;   // 查找失败
 }
 
-
 template <typename T>
 Rank Vector<T>::fibSearch(T* elem, T const& e, Rank lo, Rank hi) const {
   std::cout << "calling fibSearch... " << std::endl;
-  
-  // Fib fib
-  // while (lo < hi) {
-  // }
-  return lo;
+  Fib fib(hi-lo);
+  int k = fib.index(hi+1);
+  while (lo < hi) {
+    int priv = fib.get(k-1) - 1;
+    std::cout << "into fibSearch...\n priv = " << priv << std::endl;
+    if      (e < elem[priv]) hi = priv;
+    else if (elem[priv] < e) lo = priv + 1;
+    else                     return priv;
+  }
+  return -1;
 }
+
 
 template <typename T>
 bool Vector<T>::is_exist(const int e) const {return e != 0;}
@@ -756,6 +764,9 @@ void f_uniquify_faster(Vector<T> v) {
   v.print_vector();
 }
 
+
+
+
 template <typename T>
 void f_search(Vector<T> v) {
   std::cout << "-- ------test f_search() ----- --" << std::endl;
@@ -763,8 +774,7 @@ void f_search(Vector<T> v) {
   int e = 8;
   int lo  = 0, hi  = 7;
   // const int n = 6;
-  Fib fib(hi);
-  fib.printFib();
+  v.search(e, lo, hi);
   // v.print_vector();
   // Rank lo = 0, hi = 7;
   // int iarr[] = {2, 4, 5, 7, 8, 9, 12};
