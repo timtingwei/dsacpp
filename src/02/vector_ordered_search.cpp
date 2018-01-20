@@ -181,6 +181,8 @@ class Fib {
   // 获得当前项
   int get() {
     int result = createFib(_size - 1);
+    // std::cout << "_size - 1 = " << _size - 1
+    //           << " get() = " << result << std::endl;
     return result;
   }
 
@@ -188,6 +190,8 @@ class Fib {
   int prev() {
     if (0 < _size - 1) {
       int result = createFib(--_size - 1);
+      // std::cout << "_size - 1 = " << _size - 1
+      //           << " prev() = " << result << std::endl;
       return result;
     }
     return -1;
@@ -195,7 +199,7 @@ class Fib {
 };
 
 void test_fib() {
-  const int n = 1;
+  const int n = 2;
   Fib fib(n);
   fib.get();
   fib.prev();
@@ -801,7 +805,7 @@ Rank Vector<T>::fibSearch(T* elem, T const& e, Rank lo, Rank hi) const {
   while (lo < hi) {
     while ((hi - lo) < fib.get()) fib.prev();
     int priv = lo + fib.get() - 1;
-    std::cout << "into fibSearch... priv = " << priv << std::endl;
+    // std::cout << "into fibSearch... priv = " << priv << std::endl;
     if      (e < elem[priv]) hi = priv;
     else if (elem[priv] < e) lo = priv + 1;
     else                     return priv;
@@ -813,11 +817,11 @@ Rank Vector<T>::fibSearch(T* elem, T const& e, Rank lo, Rank hi) const {
 template <typename T>
 void f_search(Vector<T> v) {
   std::cout << "-- ------test f_search() ----- --" << std::endl;
-  // v.print_vector();
+  v.print_vector();
   int e = 9;
   int lo  = 0, hi  = 7;
-  // const int n = 6;
-  v.search(e, lo, hi);
+  int r = v.search(e, lo, hi);
+  std::cout << "e = " << e << " in vector, position = " << r << std::endl;
 
   // v.print_vector();
   // Rank lo = 0, hi = 7;
