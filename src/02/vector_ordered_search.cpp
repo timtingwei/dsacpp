@@ -161,19 +161,26 @@ class Fib {
 // 定义fib相关的类
 class Fib {
   int _size;
-  
+
  public:
   explicit Fib(int n) : _size(n) {}
 
+  // int createFib(int n) {
+  //   return (2 > n) ? n: createFib(n-1) + createFib(n-2);
+  // }
   int createFib(int n) {
-    return (2 > n) ? n: createFib(n-1) + createFib(n-2);
+    int f = 0, g = 1;          // fib(0) = 0; fib(1) = 1;
+    if (n < 2) {int r = (n) ? g : f; return r;}
+    while (0 < n--) {
+      g = g + f;
+      f = g - f;
+    }
+    return g;
   }
 
   // 获得当前项
   int get() {
     int result = createFib(_size - 1);
-    std::cout << "_size - 1 = " << _size - 1
-              << ", get() = " << result << std::endl;
     return result;
   }
 
@@ -181,8 +188,6 @@ class Fib {
   int prev() {
     if (0 < _size - 1) {
       int result = createFib(--_size - 1);
-      std::cout << "_size - 1 = " << _size - 1
-                << ", prev() = " << result << std::endl;
       return result;
     }
     return -1;
