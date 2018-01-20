@@ -102,6 +102,7 @@ class Vector {   // 向量模板类
   // ==================== 有序向量 ==============================
 };
 
+/* my test fib
 // 定义fibonacci相关的类
 class Fib {
   int* _fib_lst; int _size;
@@ -155,11 +156,43 @@ class Fib {
     std::cout << "_size = " << _size << std::endl;
   }
 };
+*/
+
+// 定义fib相关的类
+class Fib {
+  int _size;
+ public:
+  explicit Fib(int n) : _size(n) {}
+
+  int createFib(int n) {
+    return (2 > n) ? n: createFib(n-1) + createFib(n-2);
+  }
+
+  // 获得当前项
+  int get() {
+    int result = createFib(_size);
+    std::cout << "_size = " << _size << ", get() = " << result << std::endl;
+    return result;
+  }
+
+  // 获得前一项
+  int prev() {
+    if (0 < _size) {
+      int result = createFib(--_size);
+      std::cout << "_size = " << _size << ", prev() = " << result << std::endl;
+      return result;
+    }
+    return -1;
+  }
+};
 
 void test_fib() {
-  const int n = 30;
+  const int n = 1;
   Fib fib(n);
-  fib.printFib();
+  fib.get();
+  fib.prev();
+  fib.prev();
+  // fib.printFib();
   // int v = fib.get(4);
   // std::cout << "fib.get(4) = " << v << std::endl;
   // test index
@@ -690,8 +723,12 @@ Rank Vector<T>::binSearch(T* elem, T const& e, Rank lo, Rank hi) const {
 template <typename T>
 Rank Vector<T>::fibSearch(T* elem, T const& e, Rank lo, Rank hi) const {
   std::cout << "calling fibSearch... " << std::endl;
-  Fib fib(hi-lo);
-  int k = fib.index(hi+1);
+  std::cout << "hi - lo = " << hi - lo << std::endl;
+  const int n = 3;
+  // Fib fib(n);
+  // int k = fib.index(hi+1);
+  // std::cout << "k = " << k << std::endl;
+  /*
   while (lo < hi) {
     int priv = fib.get(k-1) - 1;
     std::cout << "into fibSearch...\n priv = " << priv << std::endl;
@@ -699,6 +736,7 @@ Rank Vector<T>::fibSearch(T* elem, T const& e, Rank lo, Rank hi) const {
     else if (elem[priv] < e) lo = priv + 1;
     else                     return priv;
   }
+  */
   return -1;
 }
 
@@ -889,8 +927,8 @@ int main() {
   // f_uniquify(v);
   // f_uniquify_faster(v);
 
-  f_search(v);
-  // test_fib();
+  // f_search(v);
+  test_fib();
   // v.print_vector();
   // f_permute(v);
   return 0;
