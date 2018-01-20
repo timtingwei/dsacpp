@@ -161,6 +161,7 @@ class Fib {
 // 定义fib相关的类
 class Fib {
   int _size;
+  
  public:
   explicit Fib(int n) : _size(n) {}
 
@@ -170,16 +171,18 @@ class Fib {
 
   // 获得当前项
   int get() {
-    int result = createFib(_size);
-    std::cout << "_size = " << _size << ", get() = " << result << std::endl;
+    int result = createFib(_size - 1);
+    std::cout << "_size - 1 = " << _size - 1
+              << ", get() = " << result << std::endl;
     return result;
   }
 
   // 获得前一项
   int prev() {
-    if (0 < _size) {
-      int result = createFib(--_size);
-      std::cout << "_size = " << _size << ", prev() = " << result << std::endl;
+    if (0 < _size - 1) {
+      int result = createFib(--_size - 1);
+      std::cout << "_size - 1 = " << _size - 1
+                << ", prev() = " << result << std::endl;
       return result;
     }
     return -1;
@@ -720,25 +723,6 @@ Rank Vector<T>::binSearch(T* elem, T const& e, Rank lo, Rank hi) const {
   return -1;   // 查找失败
 }
 
-template <typename T>
-Rank Vector<T>::fibSearch(T* elem, T const& e, Rank lo, Rank hi) const {
-  std::cout << "calling fibSearch... " << std::endl;
-  std::cout << "hi - lo = " << hi - lo << std::endl;
-  const int n = 3;
-  // Fib fib(n);
-  // int k = fib.index(hi+1);
-  // std::cout << "k = " << k << std::endl;
-  /*
-  while (lo < hi) {
-    int priv = fib.get(k-1) - 1;
-    std::cout << "into fibSearch...\n priv = " << priv << std::endl;
-    if      (e < elem[priv]) hi = priv;
-    else if (elem[priv] < e) lo = priv + 1;
-    else                     return priv;
-  }
-  */
-  return -1;
-}
 
 
 template <typename T>
@@ -804,15 +788,32 @@ void f_uniquify_faster(Vector<T> v) {
 
 
 
+template <typename T>
+Rank Vector<T>::fibSearch(T* elem, T const& e, Rank lo, Rank hi) const {
+  std::cout << "calling fibSearch... " << std::endl;
+  Fib fib(hi - lo);
+
+  while (lo < hi) {
+    while ((hi - lo) < fib.get()) fib.prev();
+    int priv = lo + fib.get() - 1;
+    std::cout << "into fibSearch... priv = " << priv << std::endl;
+    if      (e < elem[priv]) hi = priv;
+    else if (elem[priv] < e) lo = priv + 1;
+    else                     return priv;
+  }
+
+  return -1;
+}
 
 template <typename T>
 void f_search(Vector<T> v) {
   std::cout << "-- ------test f_search() ----- --" << std::endl;
   // v.print_vector();
-  int e = 8;
+  int e = 9;
   int lo  = 0, hi  = 7;
   // const int n = 6;
   v.search(e, lo, hi);
+
   // v.print_vector();
   // Rank lo = 0, hi = 7;
   // int iarr[] = {2, 4, 5, 7, 8, 9, 12};
@@ -927,8 +928,8 @@ int main() {
   // f_uniquify(v);
   // f_uniquify_faster(v);
 
-  // f_search(v);
-  test_fib();
+  f_search(v);
+  // test_fib();
   // v.print_vector();
   // f_permute(v);
   return 0;
