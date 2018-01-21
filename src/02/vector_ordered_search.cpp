@@ -784,6 +784,7 @@ Rank Vector<T>::binBlcSearch(T* elem, T const& e, Rank lo, Rank hi) const {
 }
 */
 
+/*
 template <typename T>
 Rank Vector<T>::binBlcSearch(T* elem, const T& e, Rank lo, Rank hi) const {
   while (1 < hi - lo) {
@@ -791,7 +792,23 @@ Rank Vector<T>::binBlcSearch(T* elem, const T& e, Rank lo, Rank hi) const {
     (e < elem[mi]) ? hi = mi : lo = mi;    // 在哪个区间上深入
   }    // 退出循环时, 区间长度1, elem[lo]为有效元素
   return (e == elem[lo])? lo: -1;
-}
+}      // 相对于binSearch A版本, 最好(坏)情况下更坏(好)
+*/
+
+template <typename T>
+Rank Vector<T>::binBlcSearch(T* elem, const T& e, Rank lo, Rank hi) const {
+  // 改进二分平衡算法使其符合语义约定
+  while (1 < hi - lo) {
+    int mi = (lo + hi) >> 1;               // 轴点为中点
+    (e < elem[mi]) ? hi = mi : lo = mi;    // 在哪个区间上深入
+  }    // 退出循环时, 区间长度1, elem[lo]为有效元素
+  if (e == elem[lo]) {  // 存在匹配
+    while (elem[lo+1] == elem[lo]) lo++;  // 返回最大秩
+    return lo;
+  } else {  // 无匹配
+    return (e < elem[lo]) ? lo - 1 : lo;  // 返回小于e的最大者秩
+  }
+}      // 相对于binSearch A版本, 最好(坏)情况下更坏(好)
 
 // ============================ split line ==========================
 template <typename T>
@@ -854,7 +871,7 @@ template <typename T>
 void f_search(Vector<T> v) {
   std::cout << "-- ------test f_search() ----- --" << std::endl;
   // v.print_vector();
-  int e = 9;
+  int e = 7;
   int lo  = 0, hi  = 7;
   int r = v.search(e, lo, hi);
   std::cout << "e = " << e << " in vector, position = " << r << std::endl;
@@ -884,7 +901,8 @@ int main() {
   // int iarr[] = {1, 3, 3, 3, 5, 7, 9, 9};
   // int iarr[] = {1, 1, 1, 1, 1, 1, 1, 1};
   Rank lo = 0, hi = 7;
-  int iarr[] = {2, 4, 5, 7, 8, 9, 12};
+  // int iarr[] = {2, 4, 5, 7, 8, 9, 12};
+  int iarr[] = {2, 4, 7, 7, 8, 9, 12};    // 测试语义约定
   Vector<int> v(iarr, lo, hi);
 
   // // -- ----test operator[] ---------- --
