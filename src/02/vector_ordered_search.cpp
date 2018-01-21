@@ -795,6 +795,7 @@ Rank Vector<T>::binBlcSearch(T* elem, const T& e, Rank lo, Rank hi) const {
 }      // 相对于binSearch A版本, 最好(坏)情况下更坏(好)
 */
 
+/*
 template <typename T>
 Rank Vector<T>::binBlcSearch(T* elem, const T& e, Rank lo, Rank hi) const {
   // 改进二分平衡算法使其符合语义约定
@@ -808,6 +809,16 @@ Rank Vector<T>::binBlcSearch(T* elem, const T& e, Rank lo, Rank hi) const {
   } else {  // 无匹配
     return (e < elem[lo]) ? lo - 1 : lo;  // 返回小于e的最大者秩
   }
+}      // 相对于binSearch A版本, 最好(坏)情况下更坏(好)
+*/
+
+template <typename T>
+Rank Vector<T>::binBlcSearch(T* elem, const T& e, Rank lo, Rank hi) const {
+  while (lo < hi) {  // 区间缩短至0
+    int mi = (lo + hi) >> 1;                   // 轴点为中点
+    (e < elem[mi]) ? hi = mi : lo = mi + 1;    // [lo, mi), (mi, hi)
+  }    // 退出循环时, 区间长度0
+  return --lo;
 }      // 相对于binSearch A版本, 最好(坏)情况下更坏(好)
 
 // ============================ split line ==========================
@@ -902,7 +913,7 @@ int main() {
   // int iarr[] = {1, 1, 1, 1, 1, 1, 1, 1};
   Rank lo = 0, hi = 7;
   // int iarr[] = {2, 4, 5, 7, 8, 9, 12};
-  int iarr[] = {2, 4, 7, 7, 8, 9, 12};    // 测试语义约定
+  int iarr[] = {2, 4, 7, 7, 7, 9, 12};    // 测试语义约定
   Vector<int> v(iarr, lo, hi);
 
   // // -- ----test operator[] ---------- --
