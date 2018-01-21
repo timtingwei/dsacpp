@@ -67,6 +67,8 @@ class Vector {   // 向量模板类
   // 两种search算法
   Rank binSearch(T* elem, T const& e, Rank lo, Rank hi) const;
   Rank fibSearch(T* elem, T const& e, Rank lo, Rank hi) const;
+  // 二分平衡查找算法
+  Rank binBlcSearch(T* elem, T const& e, Rank lo, Rank hi) const;
 
   // 生成fibonacci数
   // int fib(const int& n) const;
@@ -696,10 +698,26 @@ Rank Vector<T>::search(T const& e, Rank lo, Rank hi) const {
   // int i = rand() % 2;
   // std::cout << "r = " << i << std::endl;
   std::srand(std::time(0));
-  //return (std::rand() % 2) ?
-  return (false) ?
-      binSearch(_elem, e, lo, hi)     // 二分查找算法
-      : fibSearch(_elem, e, lo, hi);  // fibonacci查找算法
+  // return (std::rand() % 2) ?
+  int i = 0;
+  switch (i) {
+    case 0:
+      std::cout << "case 0\n";
+      return binSearch(_elem, e, lo, hi);     // 二分查找算法
+      break;
+    case 1:
+      std::cout << "case 1\n";
+      return fibSearch(_elem, e, lo, hi);  // fibonacci查找算法
+      break;
+    case 2:
+      std::cout << "case 2\n";
+      return binBlcSearch(_elem, e, lo, hi);
+      break;
+  }
+
+  // return (false) ?
+  //     binSearch(_elem, e, lo, hi)     // 二分查找算法
+             //     : fibSearch(_elem, e, lo, hi);  // fibonacci查找算法
 }
 
 // 二分查找: 版本A
@@ -721,10 +739,9 @@ Rank Vector<T>::binSearch(T* elem, T const& e, Rank lo, Rank hi) const {
 
 template <typename T>
 Rank Vector<T>::binSearch(T* elem, T const& e, Rank lo, Rank hi) const {
+  std::cout << "calling binSearch...\n";
   while (lo < hi) {    // 区间存在
     Rank mi =  (lo + hi) >> 1;        // 取中点
-    std::cout << "into binSearch while loop..." << '\n'
-              << "mi = " << mi << std::endl;
     if      (e < elem[mi]) hi = mi;      // 深入前半段查找
     else if (elem[mi] < e) lo = mi + 1;  // 深入后半段查找
     else                   return mi;    // 在mi命中
@@ -756,6 +773,20 @@ int Vector<T>::fib(const int& n, int fib_lst[]) const {
   }
 }
 */
+
+template <typename T>
+Rank Vector<T>::binBlcSearch(T* elem, T const& e, Rank lo, Rank hi) const {
+  // 二分平衡查找算法
+  std::cout << "calling binBlcSearch...\n";
+  while (1 < hi - lo) {
+    int mi = (lo + hi) >> 1;          // 轴点为中点
+    if (e < elem[mi]) hi = mi;        // 深入左区间
+    else if (elem[mi] <= e) lo = mi;  // 深入右区间
+  }
+  std::cout << "hi - lo = " << hi - lo << std::endl;
+  if (e == elem[lo]) return lo;
+  else               return -1;
+}
 
 // ============================ split line ==========================
 template <typename T>
@@ -817,7 +848,7 @@ Rank Vector<T>::fibSearch(T* elem, T const& e, Rank lo, Rank hi) const {
 template <typename T>
 void f_search(Vector<T> v) {
   std::cout << "-- ------test f_search() ----- --" << std::endl;
-  v.print_vector();
+  // v.print_vector();
   int e = 9;
   int lo  = 0, hi  = 7;
   int r = v.search(e, lo, hi);
