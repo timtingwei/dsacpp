@@ -692,6 +692,9 @@ int Vector<T>::uniquify_faster() {
 接口分离的体现, 在函数中改变_size, 通过_size的改变, 再由shrunk/expand对空间进行操作。
 */
 
+template <typename T>
+bool Vector<T>::is_exist(const int e) const {return e != 0;}
+
 // 查找ADT
 template <typename T>
 Rank Vector<T>::search(T const& e, Rank lo, Rank hi) const {
@@ -699,7 +702,7 @@ Rank Vector<T>::search(T const& e, Rank lo, Rank hi) const {
   // std::cout << "r = " << i << std::endl;
   std::srand(std::time(0));
   // return (std::rand() % 2) ?
-  int i = 0;
+  int i = 2;
   switch (i) {
     case 0:
       std::cout << "case 0\n";
@@ -714,10 +717,6 @@ Rank Vector<T>::search(T const& e, Rank lo, Rank hi) const {
       return binBlcSearch(_elem, e, lo, hi);
       break;
   }
-
-  // return (false) ?
-  //     binSearch(_elem, e, lo, hi)     // 二分查找算法
-             //     : fibSearch(_elem, e, lo, hi);  // fibonacci查找算法
 }
 
 // 二分查找: 版本A
@@ -736,7 +735,6 @@ Rank Vector<T>::binSearch(T* elem, T const& e, Rank lo, Rank hi) const {
 }
 */
 
-
 template <typename T>
 Rank Vector<T>::binSearch(T* elem, T const& e, Rank lo, Rank hi) const {
   std::cout << "calling binSearch...\n";
@@ -748,11 +746,6 @@ Rank Vector<T>::binSearch(T* elem, T const& e, Rank lo, Rank hi) const {
   }
   return -1;   // 查找失败
 }
-
-
-
-template <typename T>
-bool Vector<T>::is_exist(const int e) const {return e != 0;}
 
 /*
 template <typename T>
@@ -774,6 +767,7 @@ int Vector<T>::fib(const int& n, int fib_lst[]) const {
 }
 */
 
+/* my test code  
 template <typename T>
 Rank Vector<T>::binBlcSearch(T* elem, T const& e, Rank lo, Rank hi) const {
   // 二分平衡查找算法
@@ -784,8 +778,19 @@ Rank Vector<T>::binBlcSearch(T* elem, T const& e, Rank lo, Rank hi) const {
     else if (elem[mi] <= e) lo = mi;  // 深入右区间
   }
   std::cout << "hi - lo = " << hi - lo << std::endl;
+  // hi - lo == 1, 判断当前元素是否命中
   if (e == elem[lo]) return lo;
   else               return -1;
+}
+*/
+
+template <typename T>
+Rank Vector<T>::binBlcSearch(T* elem, const T& e, Rank lo, Rank hi) const {
+  while (1 < hi - lo) {
+    int mi = (lo + hi) >> 1;               // 轴点为中点
+    (e < elem[mi]) ? hi = mi : lo = mi;    // 在哪个区间上深入
+  }    // 退出循环时, 区间长度1, elem[lo]为有效元素
+  return (e == elem[lo])? lo: -1;
 }
 
 // ============================ split line ==========================
