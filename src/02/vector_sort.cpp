@@ -97,11 +97,19 @@ class Vector {   // 向量模板类
   int uniquify_faster();
   // 向量有序化
   void sort(Rank lo, Rank hi);
+  // 交换元素
+  // void swap(T* e1 , T* e2);
   // 起泡排序
   void bubbleSort(Rank lo, Rank hi);
   // 归并排序
   void mergeSort(Rank lo, Rank hi);
-
+  // 选择排序
+  void selectionSort(Rank lo, Rank hi);
+  // 堆排序
+  void heapSort(Rank lo, Rank hi);
+  // 快速排序
+  void quickSort(Rank lo, Rank hi);
+  
   /* ... 遍历函数*/
   template <typename VST> void traverse(VST visit);
   // template <typename VST> virtual void traverse(VST visit, T* e);
@@ -828,22 +836,46 @@ Rank Vector<T>::binBlcSearch(T* elem, const T& e, Rank lo, Rank hi) const {
 }      // 相对于binSearch A版本, 最好(坏)情况下更坏(好)
 
 template <typename T>
-Rank Vector<T>::sort(Rank lo, Rank hi) {
-  int i = 0;
-  swtich(i) {
-    case 0: bubbleSort(lo, hi); break;
-    case 1: mergeSort(lo, hi); break;
+void Vector<T>::sort(Rank lo, Rank hi) {
+  int i = 1;
+  switch (i) {
+    case 1: bubbleSort(lo, hi); break;     // 起泡排序
+    case 2: selectionSort(lo, hi); break;  // 选择排序(习题)
+    case 3: mergeSort(lo, hi); break;      // 归并排序
+    case 4: heapSort(lo, hi); break;       // 堆排序(ch 10)
+    default: quickSort(lo, hi); break;     // 快速排序(12)
   }
 }
 
 // 起泡排序
 template <typename T>
-Rank Vector<T>::bubbleSort(Rank lo, Rank hi) {
+void Vector<T>::bubbleSort(Rank lo, Rank hi) {
+  for (int i = lo; i < hi - 1; i++) {
+    for (int j = hi - 1; j > i; j--) {
+      if (_elem[j] < _elem[j-1]) swap(&_elem[j], &_elem[j-1]);
+    }
+    std::cout << "_elem[" << i << "] = " << _elem[i] << std::endl;
+  }
 }
 
 // 归并排序
 template <typename T>
-Rank Vector<T>::mergeSort(Rank lo, Rank hi) {
+void Vector<T>::mergeSort(Rank lo, Rank hi) {
+}
+
+// 选择排序
+template <typename T>
+void Vector<T>::selectionSort(Rank lo, Rank hi) {
+}
+
+// 堆排序
+template <typename T>
+void Vector<T>::heapSort(Rank lo, Rank hi) {
+}
+
+// 快速排序
+template <typename T>
+void Vector<T>::quickSort(Rank lo, Rank hi) {
 }
 
 // ============================ split line ==========================
@@ -945,8 +977,8 @@ int main() {
   // int iarr[] = {1, 3, 3, 3, 5, 7, 9, 9};
   // int iarr[] = {1, 1, 1, 1, 1, 1, 1, 1};
   Rank lo = 0, hi = 7;
-  // int iarr[] = {2, 4, 5, 7, 8, 9, 12};
-  int iarr[] = {2, 4, 7, 7, 7, 9, 12};    // 测试语义约定
+  int iarr[] = {2, 4, 5, 7, 8, 9, 12};
+  // int iarr[] = {2, 4, 7, 7, 7, 9, 12};    // 测试语义约定
   Vector<int> v(iarr, lo, hi);
 
   // // -- ----test operator[] ---------- --
@@ -1039,7 +1071,7 @@ int main() {
   // test_fib();
   // v.print_vector();
   // f_permute(v);
-  f_sort();
+  f_sort(v);
   return 0;
 }
 
