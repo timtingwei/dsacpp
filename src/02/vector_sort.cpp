@@ -846,8 +846,8 @@ void Vector<T>::sort(Rank lo, Rank hi) {
     default: quickSort(lo, hi); break;     // 快速排序(12)
   }
 }
-
-// 起泡排序
+/*
+// 起泡排序, 原始版本
 template <typename T>
 void Vector<T>::bubbleSort(Rank lo, Rank hi) {
   for (int i = lo; i < hi - 1; i++) {
@@ -857,6 +857,29 @@ void Vector<T>::bubbleSort(Rank lo, Rank hi) {
     std::cout << "_elem[" << i << "] = " << _elem[i] << std::endl;
   }
 }
+*/
+// 起泡排序
+template <typename T>
+void Vector<T>::bubbleSort(Rank lo, Rank hi) {
+  int i_step = 1;        // 内层扫描全部无序时i的增量
+  for (int i = 0; i < hi - 1; i++) {
+    std::cout << "hi = " << hi << ", i = " << i << std::endl;
+    int disordered_lst[] = {}; int n = 0;    // 储存内部扫描检测向量对是否有序
+    for (int j = hi - 1; j > i; j--) {
+      if (_elem[j] < _elem[j-1]) {
+        swap(&_elem[j], &_elem[j-1]);    // 交换无序对
+        disordered_lst[n++] = 1;         // 记录无序向量对
+      } else {disordered_lst[n++] = 0;}
+    }
+    --n;    // n为末尾元素秩
+    // while (disordered_lst[n--] == 0) i_step++;   // 根据无序向量对改变i的增量
+    // i += i_step;
+    i++;
+    std::cout << "_elem[" << i << "] = " << _elem[i] << std::endl;
+  }
+}
+
+
 
 // 归并排序
 template <typename T>
@@ -977,8 +1000,9 @@ int main() {
   // int iarr[] = {1, 3, 3, 3, 5, 7, 9, 9};
   // int iarr[] = {1, 1, 1, 1, 1, 1, 1, 1};
   Rank lo = 0, hi = 7;
-  int iarr[] = {2, 4, 5, 7, 8, 9, 12};
+  // int iarr[] = {2, 4, 5, 7, 8, 9, 12};
   // int iarr[] = {2, 4, 7, 7, 7, 9, 12};    // 测试语义约定
+  int iarr[] = {2, 5, 4, 8, 7, 12, 10};       // 测试排序
   Vector<int> v(iarr, lo, hi);
 
   // // -- ----test operator[] ---------- --
