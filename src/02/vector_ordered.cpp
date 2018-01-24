@@ -538,7 +538,6 @@ int Vector<T>::uniquify_faster() {
   _elem = new T[_capacity = _capacity];
   _elem[0] = old_elem[0]; int n = 1;   // 存入首元素, 索引指向第二位
   while (i < old_size - 1)
-    std::cout << "j = " << j << std::endl;
     if (old_elem[i] != old_elem[j]) {
       _elem[n++] = old_elem[j]; i = j++;
     } else {j++; _size--;}
@@ -549,16 +548,20 @@ int Vector<T>::uniquify_faster() {
 
 template <typename T>
 int Vector<T>::uniquify_faster() {
-  int old_size = _size;
   int i = 0, j = 0;   // 两个计数都指向首元素
   while (++j < _size) {   // j扫描到末尾
     if (_elem[i] != _elem[j]) {_elem[++i] = _elem[j];}  // j指向元素移到i后
   }
   _size = ++i; shrunk();      // 改变_size数值后, 缩容
-  return old_size - _size;
+  return j - i;    // 注意j扫到尾端的特性
 }     // 依赖shrink();
 
-// 记录位置只用i
+/*
+// 为什么不要另外的n作为索引计数?
+当j移动至i后, 计数i也增加, 重新指向移动位置后的j, 不需要对原有那份的拷贝即可完成索引操作。记录位置只用i。算法设计时，也考虑一个操作是否必要。一份复制是否必要。
+// 为什么不在uniquify中进行new 和 delete?
+接口分离的体现, 在函数中改变_size, 通过_size的改变, 再由shrunk/expand对空间进行操作。
+*/
 
 
 // ============================ split line ==========================
