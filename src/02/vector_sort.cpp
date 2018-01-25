@@ -864,6 +864,7 @@ void Vector<T>::bubbleSort(Rank lo, Rank hi) {
   int i_step = 1;        // 内层扫描全部无序时i的增量
   for (int i = 0; i < hi - 1; i++) {
     std::cout << "hi = " << hi << ", i = " << i << std::endl;
+    /*
     int disordered_lst[] = {}; int n = 0;    // 储存内部扫描检测向量对是否有序
     for (int j = hi - 1; j > i; j--) {
       if (_elem[j] < _elem[j-1]) {
@@ -876,6 +877,7 @@ void Vector<T>::bubbleSort(Rank lo, Rank hi) {
     // i += i_step;
     i++;
     std::cout << "_elem[" << i << "] = " << _elem[i] << std::endl;
+    */
   }
 }
 
